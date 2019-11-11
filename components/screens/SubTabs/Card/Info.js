@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Button, TextInput, Alert, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, Button, TextInput, Alert, TouchableOpacity, ScrollView, FlatList } from 'react-native';
 import firebase from 'react-native-firebase';
-import { Icon, DatePicker, Fab } from 'native-base';
+import { Icon, DatePicker, Fab, Thumbnail } from 'native-base';
 import AddLabel from '../../../common/Card/AddLabel';
+import AddMember from '../../../common/Card/AddMember';
 
 const la = {
   name: 'design',
@@ -18,7 +19,38 @@ export default class Info extends Component {
       deadline: this.props.data.deadline,
       describe: this.props.data.describe,
       label: this.props.data.label,
+      membersUid: this.props.data.members, //member uid của card
+      members: [], //member trong bảng
+      membersCard: []
     };
+    this.unsubcriber = null;
+  }
+
+  componentDidMount() {
+    this.unsubcriber = firebase.firestore().collection('boards').doc(this.props.bid).get()
+      .then(doc => {
+        const users = [];
+
+        doc.data().members.forEach(val => {
+          firebase.firestore().collection('users').where('uid', '==', val).get()
+            .then(user => {
+              users.push({
+                uid: user.docs[0].data().uid,
+                name: user.docs[0].data().name,
+                avatar: user.docs[0].data().photoURL,
+                email: user.docs[0].data().email
+              });
+              this.setState({
+                members: users
+              });
+            })
+        });
+      });
+  }
+
+  UNSAFE_componentWillMount() {
+    if (this.unsubcriber)
+      this.unsubcriber()
   }
 
   formatDate(date) {
@@ -42,6 +74,34 @@ export default class Info extends Component {
         color: color
       }
     })
+  }
+
+  updateMember = (membersUid) => {
+    this.setState({
+      membersUid
+    })
+  }
+
+  _renderMember() {
+    //lọc ra member card trong member bảng
+    //console.log('member uid = ',this.props.data.members);
+    if (!this.state.membersUid) {
+      return (
+        <View style={styles.avatar}></View>
+      )
+    };
+    const memberCard = [];
+
+    this.state.members.forEach(val => {
+      console.log(val);
+      if (this.state.membersUid.includes(val.uid)) {
+        memberCard.push(val);
+      };
+    });
+
+    return (memberCard.map(val => (
+      <Thumbnail source={{ uri: val.avatar }}></Thumbnail>
+    )));
   }
 
   render() {
@@ -77,13 +137,14 @@ export default class Info extends Component {
                 </View>
               </View>
 
-              {this.state.editMode ?
+              <TouchableOpacity disabled={!this.state.editMode}
+                onPress={() => {
+                  this.refs.modalMember.show(this.state.membersUid);
+                }}>
                 <View style={{ flex: 7, flexDirection: 'row-reverse' }}>
-                  <View style={styles.avatar} />
-                </View> :
-                <View style={{ flex: 7 }}>
-                  <Text>Đang build</Text>
-                </View>}
+                  {this._renderMember()}
+                </View>
+              </TouchableOpacity>
 
             </View>
             <View style={styles.border}>
@@ -159,7 +220,8 @@ export default class Info extends Component {
                 firebase.firestore().collection('cards').doc(this.props.data.id).update({
                   describe: this.state.describe,
                   deadline: this.state.deadline,
-                  label: this.state.label
+                  label: this.state.label,
+                  members: this.state.membersUid
                 });
               }}>
                 <Text style={{ fontSize: 16 }}>Lưu thay đổi</Text>
@@ -167,7 +229,8 @@ export default class Info extends Component {
             </View>}
 
         </ScrollView>
-        <AddLabel ref={'modalNhan'} id={this.props.data.id} update={this.updateLabel}></AddLabel>
+        <AddLabel ref={'modalNhan'} update={this.updateLabel}></AddLabel>
+        <AddMember ref={'modalMember'} members={this.state.members} update={this.updateMember} ></AddMember>
         <Fab
           position="bottomRight"
           style={{ backgroundColor: '#5067FF' }}
@@ -183,13 +246,13 @@ export default class Info extends Component {
               //nếu ban đầu không có deadline => date rỗng
               //this.refs.dpc.setDate(null);
               //còn trong scope setState thì không dùng ngay state được
-              if(this.props.data.deadline) {
+              if (this.props.data.deadline) {
                 deadline = this.fetchDeadline(this.props.data.deadline);
                 this.refs.dpc.setDate(new Date(deadline[2], deadline[1] - 1, deadline[0]));
               } else {
                 this.refs.dpc.state.chosenDate = null;
               }
-              
+
             };
 
             this.setState({

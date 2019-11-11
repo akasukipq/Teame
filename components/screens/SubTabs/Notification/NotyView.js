@@ -17,11 +17,11 @@ function Item({ data }) {
                 </Text>
                 <View>
                     {data.type == 'invite' && <TouchableOpacity
-                    onPress={() => {
-                        firebase.firestore().collection('boards').doc(data.payload.bid).update({
-                            members: firebase.firestore.FieldValue.arrayUnion(firebase.auth().currentUser.uid)
-                        })
-                    }}>
+                        onPress={() => {
+                            firebase.firestore().collection('boards').doc(data.payload.bid).update({
+                                members: firebase.firestore.FieldValue.arrayUnion(firebase.auth().currentUser.uid)
+                            })
+                        }}>
                         <Text>Tham gia</Text>
                     </TouchableOpacity>}
                 </View>
@@ -42,7 +42,7 @@ export default class NotyView extends Component {
 
     componentDidMount() {
         const notis = [];
-        this.unsubscriber = this.ref.where('to','==',firebase.auth().currentUser.uid).get()
+        this.unsubscriber = this.ref.where('to', '==', firebase.auth().currentUser.uid).get()
             .then((query) => {
                 query.forEach(doc => {
                     let data = doc.data();

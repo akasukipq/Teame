@@ -20,7 +20,7 @@ export default class MenuCard2 extends Component {
     _renderTab() {
         switch (this.state.index) {
             case 0:
-                return <Info data={this.props.cdt} />
+                return <Info data={this.props.cdt} bid={this.props.bid} />
                 break;
             case 1:
                 return <Checklist data={this.props.cdt} />

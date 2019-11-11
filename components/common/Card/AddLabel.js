@@ -34,7 +34,7 @@ export default class AddLabel extends Component {
 
     _renderColor() {
         return (color.map(val => (
-            <TouchableOpacity onPress={() => {
+            <TouchableOpacity key={val} onPress={() => {
                 this.setState({ choosen: val })
             }}>
                 <View style={[styles.color, { backgroundColor: val }]}>
@@ -76,7 +76,7 @@ export default class AddLabel extends Component {
                 </View>
                 <View style={{ flexDirection: 'row-reverse', marginTop: 10, alignItems: 'flex-end' }}>
                     <TouchableOpacity style={{ marginLeft: 10 }} onPress={() => {
-                        this.props.update(this.state.name, this.state.choosen);
+                        this.props.update(this.state.name ? this.state.name : (this.state.existData ? this.state.existData.name : '') , this.state.choosen);
                         this.refs.modal.close();
                     }} >
                         <Text>OK</Text>

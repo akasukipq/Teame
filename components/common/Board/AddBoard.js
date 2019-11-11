@@ -33,7 +33,7 @@ export default class AddBoard extends Component {
                 backdrop={true}
                 coverScreen={true}>
                 <View>
-                    <Text style={{fontSize: 18}}>Thêm bảng</Text>
+                    <Text style={{ fontSize: 18 }}>Thêm bảng</Text>
                 </View>
                 <View>
                     <TextInput placeholder="Tên bảng..." placeholderTextColor="grey" style={{ borderBottomWidth: 1, fontSize: 16 }}

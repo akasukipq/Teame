@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import { View, Text, Button, TextInput, FlatList, Alert, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { withNavigation } from 'react-navigation';
 import firebase from 'react-native-firebase';
-import { Icon, Fab } from 'native-base';
+import { Icon, Fab, Thumbnail } from 'native-base';
 
 function _render(data) {
     return (
         data.map(val => (
-            <Image key={val.uid} style={styles.avatar} source={{uri: val.avatar}}></Image>
+            <Thumbnail key={val.uid} style={styles.avatar} source={{uri: val.avatar}}></Thumbnail>
         ))
     )
 }

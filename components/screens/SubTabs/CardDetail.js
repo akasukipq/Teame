@@ -65,7 +65,7 @@ export default class CardDetail extends Component {
                             this.props.setDrag(true);
                         }}
                         onPress={() => {
-                            this.props.navigation.navigate("Chi tiết card", { id: item.id, name: this.props.ListName });
+                            this.props.navigation.navigate("Chi tiết card", { id: item.id, name: this.props.ListName, bid: this.props.bid });
                         }}>
 
                         {item.label && <Text style={{color: item.label.color}}>{item.label.name}</Text>}

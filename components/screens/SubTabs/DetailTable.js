@@ -32,8 +32,6 @@ class DetailTable extends Component {
             listList: [],
             listname: '',
             listSlide: [],
-            //isLoadItem: false
-            //dùng cho xoay màn hình
             pan: new Animated.ValueXY(),
             scale: new Animated.Value(1),
             locaX: 0,
@@ -66,8 +64,6 @@ class DetailTable extends Component {
     };
 
     componentDidMount() {
-        //console.log("COMPONENT DID");
-        //lấy danh sách list id
         this.unsubscriber = this.ref.onSnapshot((query) => {
             const list = [];
             //
@@ -222,7 +218,7 @@ class DetailTable extends Component {
                     <Icon name='md-more' />
                 </View>
                 <View style={styles.item}>
-                    <CardDetail ListName={item.name} ListId={item.id} SlideId={index} PanResponder={this._panResponder} getdt={this.getCard} setDrag={this.setDrag} navigation={this.props.navigation} />
+                    <CardDetail bid={this.props.data.id} ListName={item.name} ListId={item.id} SlideId={index} PanResponder={this._panResponder} getdt={this.getCard} setDrag={this.setDrag} navigation={this.props.navigation} />
                 </View>
                 <View>
                     <Button title="Thêm thẻ"
