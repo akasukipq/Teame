@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "690696105309",
+    "firebase_url": "https://teame-266e1.firebaseio.com",
+    "project_id": "teame-266e1",
+    "storage_bucket": "teame-266e1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:690696105309:android:687e0eda21124f9ff1ccb4",
+        "android_client_info": {
+          "package_name": "com.teame"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "690696105309-l3335qsl27boglnb3teduka4ufiohhls.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQ5fZ6CiAIl5Q060nExrYNAZeniRSqQM4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "690696105309-l3335qsl27boglnb3teduka4ufiohhls.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
