@@ -70,7 +70,7 @@ export default class CardViewScreen extends Component {
                     </Right>
                 </Header>
                 <Content contentContainerStyle={{ flex: 1 }}>
-                    {this.state.Loading && <MenuCard2 bid={this.props.navigation.state.params.bid} cdt={this.state.Card} listName={this.props.navigation.state.params.name}/>}
+                    {this.state.Loading && <MenuCard2 bmembers={this.props.navigation.state.params.members} cdt={this.state.Card} listName={this.props.navigation.state.params.name}/>}
                 </Content>
             </Container>
         );

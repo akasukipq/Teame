@@ -34,29 +34,29 @@ export default class NotyView extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            notis: []
+            notis: [],
+            update: false
         };
         this.ref = firebase.firestore().collection('requests');
         this.unsubscriber = null;
     }
 
     componentDidMount() {
-        const notis = [];
-        this.unsubscriber = this.ref.where('to', '==', firebase.auth().currentUser.uid).get()
-            .then((query) => {
+        this.unsubscriber = this.ref.where('to','==',firebase.auth().currentUser.uid).
+            onSnapshot(query => {
+                const notis = [];
+                console.log('update = ', query);
                 query.forEach(doc => {
-                    let data = doc.data();
                     notis.push({
-                        id: doc.id,
-                        from: data.from,
-                        type: data.type,
-                        payload: data.payload,
-                        status: data.status
-                    });
+                        from: doc.data().from,
+                        payload: doc.data().payload,
+                        type: doc.data().type
+                    })
                 });
 
                 this.setState({
-                    notis
+                    notis,
+                    update: !this.state.update
                 });
             })
     }
@@ -74,8 +74,8 @@ export default class NotyView extends Component {
                     showsVerticalScrollIndicator={false}
                     data={this.state.notis}
                     renderItem={({ item }) => <Item data={item}></Item>}
-                    keyExtractor={item => item.id}
-                // extraData={this.state.loading}
+                    keyExtractor={item => item.from}
+                    extraData={this.state.update}
                 />
             </View>
         );

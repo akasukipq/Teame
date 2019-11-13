@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { View, StyleSheet, TextInput, Button, TouchableOpacity } from 'react-native';
 import { Container, Header, Content, Body, Left, Icon, Title, Right, Thumbnail, Text } from 'native-base';
 import DocumentPicker from 'react-native-document-picker';
+import RNFetchBlob from 'rn-fetch-blob';
 import firebase from 'react-native-firebase';
 export default class ProfileScreen extends Component {
     constructor(props) {
@@ -10,6 +11,8 @@ export default class ProfileScreen extends Component {
             name: '',
             email: '',
             photoURL: '',
+            photoName: '',
+            photoType: '',
             saved: false
         };
 
@@ -20,25 +23,24 @@ export default class ProfileScreen extends Component {
         DocumentPicker.pick({
             type: [DocumentPicker.types.images],
         }).then(val => {
-            this.storageRef.ref('avatars').child(val.name).putFile(val.uri, { contentType: val.type, cacheControl: 'no-store' })
-                .then(image => {
-                    let metadata = image.metadata;
-                    this.storageRef.ref('avatars').child(metadata.name).getDownloadURL()
-                        .then(url => {
-                            console.log('url = ', url);
-                            this.setState({
-                                photoURL: url
-                            })
-                        });
-                })
-                .catch(error => {
-                    console.log("lỗi ", error);
-                })
+            console.log('uri = ', val);
+            this.setState({
+                photoName: val.name,
+                photoType: val.type
+
+            })
+            RNFetchBlob.fs.stat(val.uri)
+                .then(stats => {
+                    console.log('path = ', 'file://' + stats.path);
+                    this.setState({
+                        photoURL: 'file://' + stats.path
+                    })
+                });
         }).catch(error => console.log(error));
     }
 
     render() {
-        let user = firebase.auth().currentUser;
+        let user = this.props.navigation.state.params.user;
         return (
             <Container>
                 <Header>
@@ -57,14 +59,14 @@ export default class ProfileScreen extends Component {
                             <Text>Ảnh đại diện</Text>
                         </View>
                         <TouchableOpacity
-                        onPress={() => {this.imagePicker()}}>
-                            <Thumbnail style={styles.pro5} large source={{ uri: user.photoURL }} />
+                            onPress={() => { this.imagePicker() }}>
+                            <Thumbnail style={styles.pro5} large source={{ uri: this.state.photoURL ? this.state.photoURL : user.photoURL }} />
                         </TouchableOpacity>
                     </View>
                     <View>
                         <View>
                             <Text style={{ marginLeft: 10 }}>Tên hiển thị</Text>
-                            <TextInput defaultValue={user.displayName} placeholder="John Doe..." style={{ borderColor: 'gray', borderWidth: 1, margin: 10 }}
+                            <TextInput defaultValue={user.name} placeholder="John Doe..." style={{ borderColor: 'gray', borderWidth: 1, margin: 10 }}
                                 onChangeText={(text) => { this.setState({ name: text }) }} />
                         </View>
                         <View>
@@ -79,12 +81,42 @@ export default class ProfileScreen extends Component {
                         <View style={{ margin: 10 }}>
                             <Button title="Lưu"
                                 onPress={() => {
-                                    user.updateProfile({
-                                        displayName: this.state.name,
-                                        photoURL: this.state.photoURL
-                                    }).then(() => {
-                                        user.reload();
-                                    });
+                                    console.log('tên = ', this.state.name, ' ảnh = ', this.state.photoURL);
+                                    if (this.state.photoURL != '') {
+                                        //lưu lên storage
+                                        this.storageRef.ref('avatars').child(this.state.photoName).putFile(this.state.photoURL, { contentType: this.state.photoType, cacheControl: 'no-store' })
+                                            .then(image => {
+                                                let metadata = image.metadata;
+                                                //then we get url base on metadata.name in storage
+                                                this.storageRef.ref('avatars').child(metadata.name).getDownloadURL()
+                                                    .then(url => {
+                                                        //có thay đổi ảnh
+                                                        firebase.auth().currentUser.updateProfile({
+                                                            photoURL: url
+                                                        }).then(() => {
+                                                            //update trong firestore
+                                                            firebase.firestore().collection('users').doc(user.uid).update({
+                                                                photoURL: url
+                                                            });
+                                                        });
+                                                    });
+                                            })
+                                    };
+                                    if (this.state.name != '' && this.state.name != user.displayName) {
+                                        //có thay đổi tên
+                                        firebase.auth().currentUser.updateProfile({
+                                            displayName: this.state.name
+                                        }).then(() => {
+                                            //update trong firestore
+                                            firebase.firestore().collection('users').doc(user.uid).update({
+                                                name: this.state.name
+                                            });
+                                            //update state
+                                            this.setState({
+                                                name: ''
+                                            });
+                                        });
+                                    };
                                 }}></Button>
                         </View>
                     </View>

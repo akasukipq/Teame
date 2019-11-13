@@ -13,13 +13,13 @@ import {
     Animated,
     PanResponder
 } from 'react-native';
-//import { Container, Content, Card, CardItem, Text } from 'native-base';
+import { Thumbnail } from 'native-base';
 import { withNavigation } from 'react-navigation';
 import Carousel from 'react-native-snap-carousel';
 import firebase from 'react-native-firebase';
 import CardDetail from "./CardDetail";
 import { Icon } from 'native-base';
-import {bigStyles} from './Card/styles';
+import { bigStyles } from './Card/styles';
 import AddCard from '../../common/Card/AddCard';
 
 const ScreenWidth = Dimensions.get("window").width;
@@ -46,7 +46,7 @@ class DetailTable extends Component {
         this.unsubscriber = null;
         this.ref = firebase.firestore().collection('boards').doc(this.props.data.id).collection('lists');
         this.dataCard = null;
-        this.showModal= this.showModal.bind(this);
+        this.showModal = this.showModal.bind(this);
     }
 
     setDrag = (dragging) => {
@@ -218,7 +218,10 @@ class DetailTable extends Component {
                     <Icon name='md-more' />
                 </View>
                 <View style={styles.item}>
-                    <CardDetail bid={this.props.data.id} ListName={item.name} ListId={item.id} SlideId={index} PanResponder={this._panResponder} getdt={this.getCard} setDrag={this.setDrag} navigation={this.props.navigation} />
+                    <CardDetail members={this.props.data.members} bid={this.props.data.id}
+                        ListName={item.name} ListId={item.id} SlideId={index}
+                        PanResponder={this._panResponder} getdt={this.getCard}
+                        setDrag={this.setDrag} navigation={this.props.navigation} />
                 </View>
                 <View>
                     <Button title="Thêm thẻ"
@@ -234,14 +237,22 @@ class DetailTable extends Component {
         this.refs.modalThemThe.show(selectedList);
     }
 
+    renderMember() {
+        if(!this.dataCard.cardmembers)
+            return false;
+        return (this.props.data.members.map(val => (
+            this.dataCard.cardmembers.includes(val.uid) && <Thumbnail key={val.uid} style={bigStyles.avatar} source={{ uri: val.avatar }}></Thumbnail>
+        )));
+    }
+
     render() {
-        //console.log("COMPONENT RENDER");
         return (
             <View style={{ flex: 1, width: "100%", height: "100%" }}>
                 <View
                     style={{ backgroundColor: "#e6e6e6", height: Dimensions.get("window").height, }}>
                     {this.state.isDrag &&
                         <Animated.View style={[
+                            {width: Dimensions.get("window").width - 40},
                             { zIndex: 10, position: 'absolute', top: this.state.locaY - 110, left: this.state.locaX },
                             {
                                 transform: [
@@ -251,34 +262,34 @@ class DetailTable extends Component {
                             },
                         ]}>
                             <View style={styles.animatedContainer}>
-                                <View style={bigStyles.tag}>
-                                </View>
+                                {this.dataCard.label && <Text style={{ color: item.label.color }}>{item.label.name}</Text>}
                                 <View style={bigStyles.section}>
                                     <Text>{this.dataCard.cardname}</Text>
                                 </View>
-                                <View style={bigStyles.section}>
-                                    <Icon name='md-time' style={[{ fontSize: 14 }, bigStyles.subcolor]} />
-                                    <Text style={[bigStyles.showdeadline, bigStyles.subcolor]}>Hôm nay - 23/12/2019</Text>
-                                </View>
+                                {this.dataCard.deadline &&
+                                    <View style={sbigStylestyles.section}>
+                                        <Icon name='md-time' style={[{ fontSize: 14 }, bigStyles.subcolor]} />
+                                        <Text style={[bigStyles.showdeadline, bigStyles.subcolor]}>{item.deadline}</Text>
+                                    </View>}
                                 <View style={bigStyles.actionSec}>
                                     <View style={bigStyles.showInfo}>
-                                        <View style={{ marginRight: 10, flexDirection: 'row', alignItems: 'center' }}>
+                                        {this.dataCard.numList != 0 && <View style={{ marginRight: 10, flexDirection: 'row', alignItems: 'center' }}>
                                             <Icon name='md-list' style={[{ fontSize: 14 }, bigStyles.subcolor]} />
-                                            <Text style={[bigStyles.showdeadline, bigStyles.subcolor]}>5</Text>
-                                        </View>
-                                        <View style={{ marginRight: 10, flexDirection: 'row', alignItems: 'center' }}>
-                                            <Icon name='md-attach' style={[{ fontSize: 14 }, bigStyles.subcolor]} />
-                                            <Text style={[bigStyles.showdeadline, bigStyles.subcolor]}>5</Text>
-                                        </View>
-                                        <View style={{ marginRight: 10, flexDirection: 'row', alignItems: 'center' }}>
-                                            <Icon name='md-chatboxes' style={[{ fontSize: 14 }, bigStyles.subcolor]} />
-                                            <Text style={[bigStyles.showdeadline, bigStyles.subcolor]}>5</Text>
-                                        </View>
+                                            <Text style={[bigStyles.showdeadline, bigStyles.subcolor]}>{this.dataCard.numList}</Text>
+                                        </View>}
+                                        {this.dataCard.numAttach != 0 &&
+                                            <View style={{ marginRight: 10, flexDirection: 'row', alignItems: 'center' }}>
+                                                <Icon name='md-attach' style={[{ fontSize: 14 }, bigStyles.subcolor]} />
+                                                <Text style={[bigStyles.showdeadline, bigStyles.subcolor]}>{this.dataCard.numAttach}</Text>
+                                            </View>}
+                                        {this.dataCard.numComment != 0 &&
+                                            <View style={{ marginRight: 10, flexDirection: 'row', alignItems: 'center' }}>
+                                                <Icon name='md-chatboxes' style={[{ fontSize: 14 }, bigStyles.subcolor]} />
+                                                <Text style={[bigStyles.showdeadline, bigStyles.subcolor]}>{this.dataCard.numComment}</Text>
+                                            </View>}
                                     </View>
                                     <View style={bigStyles.member}>
-                                        <View style={bigStyles.avatar} />
-                                        <View style={bigStyles.avatar} />
-                                        <View style={bigStyles.avatar} />
+                                        {this.renderMember()}
                                     </View>
                                 </View>
                             </View>
@@ -332,5 +343,5 @@ const styles = StyleSheet.create({
     animatedContainer: {
         padding: 10,
         borderWidth: 1,
-    }
+    },
 });

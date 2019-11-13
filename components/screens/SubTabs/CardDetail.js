@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, FlatList, Animated, PanResponder, StyleSheet, Alert, TouchableOpacity, Button } from 'react-native';
 import firebase from 'react-native-firebase';
-import { Icon } from 'native-base';
+import { Icon, Thumbnail } from 'native-base';
 
 export default class CardDetail extends Component {
     constructor(props) {
@@ -20,7 +20,6 @@ export default class CardDetail extends Component {
             const card = [];
             //
             query.forEach(doc => {
-                console.log('co lag = ', doc.data());
                 card.push({
                     id: doc.id,
                     name: doc.data().name,
@@ -29,7 +28,8 @@ export default class CardDetail extends Component {
                     label: doc.data().label,
                     numComment: doc.data().numComment,
                     numList: doc.data().numList,
-                    numAttach: doc.data().numAttach
+                    numAttach: doc.data().numAttach,
+                    members: doc.data().members
 
                 });
             });
@@ -46,6 +46,14 @@ export default class CardDetail extends Component {
         }
     }
 
+    renderMember(card) {
+        if (!card.members)
+            return false;
+        return (this.props.members.map(val => (
+            card.members.includes(val.uid) && <Thumbnail key={val.uid} style={styles.avatar} source={{ uri: val.avatar }}></Thumbnail>
+        )));
+    }
+
     _renderItem = ({ item }) => {
         return (
             <View>
@@ -59,16 +67,20 @@ export default class CardDetail extends Component {
                             let data = {
                                 cardid: item.id,
                                 cardname: item.name,
+                                cardmembers: item.members,
+                                numComment: item.numComment,
+                                numList: item.numList,
+                                numAttach: item.numAttach,
                                 sid: this.props.SlideId
                             }
                             this.props.getdt(data);
                             this.props.setDrag(true);
                         }}
                         onPress={() => {
-                            this.props.navigation.navigate("Chi tiết card", { id: item.id, name: this.props.ListName, bid: this.props.bid });
+                            this.props.navigation.navigate("Chi tiết card", { id: item.id, name: this.props.ListName, members: this.props.members });
                         }}>
 
-                        {item.label && <Text style={{color: item.label.color}}>{item.label.name}</Text>}
+                        {item.label && <Text style={{ color: item.label.color }}>{item.label.name}</Text>}
 
                         <View style={styles.section}>
                             <Text>{item.name}</Text>
@@ -97,9 +109,7 @@ export default class CardDetail extends Component {
                                     </View>}
                             </View>
                             <View style={styles.member}>
-                                <View style={styles.avatar} />
-                                <View style={styles.avatar} />
-                                <View style={styles.avatar} />
+                                {this.renderMember(item)}
                             </View>
                         </View>
                     </TouchableOpacity>

@@ -35,7 +35,16 @@ export default class AddCard extends Component {
                 </View>
                 <View style={{ flex: 2, justifyContent: 'center', alignItems: 'center' }}>
                     {this.state.selectedList.includes(val.uid) ?
-                        <TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={() => {
+                                //tìm vị trí phần tử
+                                const temp =  this.state.selectedList;
+                                let index = this.state.selectedList.indexOf(val.uid);
+                                temp.splice(index, 1);
+                                this.setState({
+                                    selectedList: temp
+                                });
+                            }}>
                             <Text>Hủy</Text>
                         </TouchableOpacity>
                         :

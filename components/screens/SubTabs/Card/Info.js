@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Button, TextInput, Alert, TouchableOpacity, ScrollView, FlatList } from 'react-native';
+import { View, StyleSheet, Button, TextInput, Alert, TouchableOpacity, ScrollView, FlatList } from 'react-native';
 import firebase from 'react-native-firebase';
-import { Icon, DatePicker, Fab, Thumbnail } from 'native-base';
+import { Icon, DatePicker, Fab, Thumbnail, Text } from 'native-base';
 import AddLabel from '../../../common/Card/AddLabel';
 import AddMember from '../../../common/Card/AddMember';
 
@@ -20,37 +20,9 @@ export default class Info extends Component {
       describe: this.props.data.describe,
       label: this.props.data.label,
       membersUid: this.props.data.members, //member uid của card
-      members: [], //member trong bảng
+      members: this.props.bmembers, //member trong bảng
       membersCard: []
     };
-    this.unsubcriber = null;
-  }
-
-  componentDidMount() {
-    this.unsubcriber = firebase.firestore().collection('boards').doc(this.props.bid).get()
-      .then(doc => {
-        const users = [];
-
-        doc.data().members.forEach(val => {
-          firebase.firestore().collection('users').where('uid', '==', val).get()
-            .then(user => {
-              users.push({
-                uid: user.docs[0].data().uid,
-                name: user.docs[0].data().name,
-                avatar: user.docs[0].data().photoURL,
-                email: user.docs[0].data().email
-              });
-              this.setState({
-                members: users
-              });
-            })
-        });
-      });
-  }
-
-  UNSAFE_componentWillMount() {
-    if (this.unsubcriber)
-      this.unsubcriber()
   }
 
   formatDate(date) {
@@ -87,20 +59,19 @@ export default class Info extends Component {
     //console.log('member uid = ',this.props.data.members);
     if (!this.state.membersUid) {
       return (
-        <View style={styles.avatar}></View>
+        <View style={[styles.avatar, {backgroundColor: 'green',}]}></View>
       )
     };
     const memberCard = [];
 
     this.state.members.forEach(val => {
-      console.log(val);
       if (this.state.membersUid.includes(val.uid)) {
         memberCard.push(val);
       };
     });
 
     return (memberCard.map(val => (
-      <Thumbnail source={{ uri: val.avatar }}></Thumbnail>
+      <Thumbnail style={styles.avatar} key={val.uid} source={{ uri: val.avatar }}></Thumbnail>
     )));
   }
 
@@ -295,10 +266,9 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   avatar: {
-    width: 30,
-    height: 30,
+    width: 40,
+    height: 40,
     borderRadius: 5,
     marginRight: 10,
-    backgroundColor: 'green',
   }
 })

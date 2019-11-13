@@ -59,13 +59,13 @@ class BoardView extends Component {
                 let board = doc;
                 const users = [];
                 board.data().members.forEach(val => {
-                    firebase.firestore().collection('users').where('uid', '==', val).get()
+                    firebase.firestore().collection('users').doc(val).get()
                         .then(user => {
                             users.push({
-                                uid: user.docs[0].data().uid,
-                                name: user.docs[0].data().name,
-                                avatar: user.docs[0].data().photoURL,
-                                email: user.docs[0].data().email
+                                uid: user.data().uid,
+                                name: user.data().name,
+                                avatar: user.data().photoURL,
+                                email: user.data().email
                             });
 
                             this.setState({
