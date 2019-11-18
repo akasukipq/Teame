@@ -1,17 +1,17 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, FlatList, TextInput, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, FlatList, TextInput, TouchableOpacity, Text } from 'react-native';
 import firebase from 'react-native-firebase';
-import { Icon, Thumbnail, Text } from 'native-base';
+import { Icon, Thumbnail } from 'native-base';
 
 function Item({ data }) {
     return (
-        <View style={{ flexDirection: 'row', margin: 10 }}>
+        <View style={{ flexDirection: 'row', marginTop: 10 }}>
             <View style={{ flex: 1, }}>
-                <Thumbnail small source={{uri: data.avatar}}/>
+                <Thumbnail small source={{ uri: data.avatar }} />
             </View>
-            <View style={{flex: 9, flexDirection: 'column', marginLeft: 10}}>
-                <Text>{data.uname}</Text>
-                <View style={{flexWrap: 'wrap', marginTop: 5}}>
+            <View style={{ flex: 9, flexDirection: 'column', marginLeft: 10, backgroundColor: '#C0CCDA', borderRadius: 10, padding: 5 }}>
+                <Text style={{fontWeight: 'bold'}}>{data.uname}</Text>
+                <View style={{ marginTop: 5 }}>
                     <Text>{data.contents}</Text>
                 </View>
             </View>
@@ -77,7 +77,7 @@ export default class Comment extends Component {
                                 contents: text
                             });
                         }} />
-                    <TouchableOpacity style={{flex: 1, alignItems: 'flex-end'}}
+                    <TouchableOpacity style={{ flex: 1, alignItems: 'flex-end' }}
                         onPress={() => {
                             this.ref.collection('comments').add({
                                 uname: firebase.auth().currentUser.displayName,

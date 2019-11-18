@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Button, TextInput, Alert, TouchableOpacity, ScrollView, FlatList } from 'react-native';
+import { View, StyleSheet, Button, TextInput, Alert, TouchableOpacity, ScrollView, Text } from 'react-native';
 import firebase from 'react-native-firebase';
-import { Icon, DatePicker, Fab, Thumbnail, Text } from 'native-base';
+import { Icon, DatePicker, Fab, Thumbnail } from 'native-base';
 import AddLabel from '../../../common/Card/AddLabel';
 import AddMember from '../../../common/Card/AddMember';
 

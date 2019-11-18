@@ -1,14 +1,21 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Icon, Button, Fab } from 'native-base';
-import { Info, Checklist, Attach, Comment } from '../../screens/SubTabs/Card';
+import { Info, Checklist, Attach, Comment, More } from '../../screens/SubTabs/Card';
+import firebase from 'react-native-firebase';
 
 export default class MenuCard2 extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            index: 0
+            index: 0,
+            votes: [],
+            listImageUrl: [],
+            listDocument: []
         };
+        this.unsubscriberOfMore = null;
+        this.unsubscriberOfAttach = null;
+        this.ref = firebase.firestore().collection('cards').doc(this.props.cdt.id);
     }
 
     changeIndex(index) {
@@ -32,7 +39,7 @@ export default class MenuCard2 extends Component {
                 return <Comment data={this.props.cdt} />
                 break;
             case 4:
-                return <Info />
+                return <More data={this.props.cdt} votes={this.state.votes} />
                 break;
             case 5:
                 return <Info />
