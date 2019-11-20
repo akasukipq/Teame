@@ -16,6 +16,7 @@ export default class Info extends Component {
     this.state = {
       save: false,
       editMode: false,
+      name: this.props.data.name,
       deadline: this.props.data.deadline,
       describe: this.props.data.describe,
       label: this.props.data.label,
@@ -59,7 +60,7 @@ export default class Info extends Component {
     //console.log('member uid = ',this.props.data.members);
     if (!this.state.membersUid) {
       return (
-        <View style={[styles.avatar, {backgroundColor: 'green',}]}></View>
+        <View style={[styles.avatar, { backgroundColor: 'green', }]}></View>
       )
     };
     const memberCard = [];
@@ -78,14 +79,34 @@ export default class Info extends Component {
   render() {
     let deadline = this.state.deadline ? this.fetchDeadline(this.state.deadline) : null;
     return (
-      <View style={{ flex: 1, flexDirection: 'column' }}>
+      <View style={{ flex: 1 }}>
         <ScrollView>
+
+          {this.state.editMode &&
+            <View style={styles.section}>
+              <View style={styles.title}>
+                <Icon name='md-bookmark' style={[styles.article, { fontSize: 14, }]}></Icon>
+                <Text style={[{ marginLeft: 5 }, styles.article]}>Tên thẻ</Text>
+              </View>
+              <View>
+                <TextInput defaultValue={this.props.data.name}
+                  onChangeText={(text) => {
+                    this.setState({
+                      name: text
+                    });
+                  }} />
+              </View>
+              <View style={styles.border}>
+              </View>
+            </View>
+          }
+
           <View style={styles.section}>
             <View style={styles.title}>
               <Icon name='md-clipboard' style={[styles.article, { fontSize: 14, }]}></Icon>
               <Text style={[{ marginLeft: 5 }, styles.article]}>Mô tả</Text>
             </View>
-            <View style={styles.content}>
+            <View>
               {this.state.editMode ? <TextInput placeholder='Thêm mô tả...' placeholderTextColor="#d6d6d6"
                 defaultValue={this.state.describe} editable={this.state.editMode}
                 onChangeText={(text) => {
@@ -93,7 +114,7 @@ export default class Info extends Component {
                     describe: text
                   })
                 }} /> :
-                <Text style={{ fontSize: 16 }}>{this.state.describe}</Text>}
+                <Text style={styles.content}>{this.state.describe}</Text>}
             </View>
             <View style={styles.border}>
             </View>
@@ -189,6 +210,7 @@ export default class Info extends Component {
             <View style={styles.section}>
               <TouchableOpacity onPress={() => {
                 firebase.firestore().collection('cards').doc(this.props.data.id).update({
+                  name: this.state.name,
                   describe: this.state.describe,
                   deadline: this.state.deadline,
                   label: this.state.label,
@@ -204,7 +226,7 @@ export default class Info extends Component {
         <AddMember ref={'modalMember'} members={this.state.members} update={this.updateMember} ></AddMember>
         <Fab
           position="bottomRight"
-          style={{ backgroundColor: '#5067FF' }}
+          style={{ backgroundColor: '#5067FF', width: 50, height: 50 }}
           onPress={() => {
             if (this.state.editMode == true) { //Đang ở edit mode -> ấn đóng lại
 

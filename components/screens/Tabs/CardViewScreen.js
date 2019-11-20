@@ -2,11 +2,19 @@ import React, { Component } from 'react';
 import {
     View,
     StyleSheet,
-    ScrollView
+    ScrollView,
+    Text,
+    TouchableOpacity,
+    Dimensions,
+    Alert
 } from 'react-native';
 import { Container, Header, Content, Body, Left, Icon, Title, Right, Subtitle, Button } from 'native-base';
-import MenuCard2 from '../../common/Card/MenuCard2';
+import { Info, Checklist, Attach, Comment, Vote } from '../SubTabs/Card';
 import firebase from 'react-native-firebase';
+import Menu, { MenuItem, MenuDivider } from 'react-native-material-menu';
+
+const screenWidth = Dimensions.get('window').width;
+
 export default class CardViewScreen extends Component {
 
     constructor(props) {
@@ -20,24 +28,60 @@ export default class CardViewScreen extends Component {
                 deadline: '',
             },
             Loading: false,
+            index: 0,
         };
         this.unsubscriber = null;
         this.ref = firebase.firestore().collection('cards');
     }
 
+    changeIndex(index) {
+        this.setState({
+            index
+        })
+    }
+
+    _renderTab() {
+        switch (this.state.index) {
+            case 0:
+                return <Info data={this.state.Card} bmembers={this.props.navigation.state.params.members} />
+                break;
+            case 1:
+                return <Checklist data={this.state.Card} />
+                break;
+            case 2:
+                return <Attach data={this.state.Card} />
+                break;
+            case 3:
+                return <Comment data={this.state.Card} />
+                break;
+            case 4:
+                return <Vote data={this.state.Card} />
+                break;
+            case 5:
+                return <Info />
+                break;
+            default:
+                break;
+        }
+    }
+
+
     componentDidMount() {
         let id = this.props.navigation.state.params.id;
         this.unsubscriber = this.ref.doc(id).onSnapshot(doc => {
-            const Card = Object.assign({}, this.state.Card, {
-                id: id,
-                name: doc.data().name,
-                describe: doc.data().describe,
-                deadline: doc.data().deadline,
-                label: doc.data().label,
-                members: doc.data().members,
-                lid: doc.data().lid,
-            });
-            this.setState({ Card, Loading: true });
+            console.log('có doc không ', doc);
+            if (doc.data()) {
+                const Card = Object.assign({}, this.state.Card, {
+                    id: id,
+                    name: doc.data().name,
+                    describe: doc.data().describe,
+                    deadline: doc.data().deadline,
+                    label: doc.data().label,
+                    members: doc.data().members,
+                    lid: doc.data().lid,
+                });
+                this.setState({ Card, Loading: true });
+            }
         }
         );
 
@@ -49,45 +93,153 @@ export default class CardViewScreen extends Component {
         };
     }
 
-
     render() {
         return (
-            <Container style={{ backgroundColor: '#d4d6d5' }}>
+            <View style={{ flex: 1 }}>
+                <View style={styles.header}>
+                    <View style={[styles.section, { paddingTop: 10 }]}>
+                        <TouchableOpacity onPress={() => { this.props.navigation.goBack() }}>
+                            <Icon name="arrow-back" style={{ color: 'white' }} />
+                        </TouchableOpacity>
+                        <Menu
+                            ref={'menu'}
+                            button={<TouchableOpacity style={{ paddingLeft: 10, paddingRight: 10 }}
+                                onPress={() => { this.refs.menu.show() }}>
+                                <Icon name="more" style={{ color: 'white' }} />
+                            </TouchableOpacity>}
+                        >
+                            <MenuItem >Bầu chọn</MenuItem>
+                            <MenuItem >Địa điểm</MenuItem>
+                            <MenuDivider />
+                            <MenuItem onPress={() => {
+                                Alert.alert(
+                                    'Xóa thẻ',
+                                    'Bạn muốn xóa thẻ này? Dữ liệu của thẻ sẽ bị mất, thao tác này không thể hoàn lại.',
+                                    [
+                                        {
+                                            text: 'Hủy',
+                                            style: 'cancel',
+                                        },
+                                        {
+                                            text: 'Xóa', onPress: () => {
+                                                this.ref.doc(this.state.Card.id).delete();
+                                                this.refs.menu.hide();
+                                                this.props.navigation.goBack();
+                                            }
+                                        },
+                                    ],
+                                    { cancelable: false },
+                                );
+                            }}>Xóa</MenuItem>
+                        </Menu>
 
-                <Header>
-                    <Left>
-                        <Button transparent>
-                            <Icon name="arrow-back" />
-                        </Button>
-                    </Left>
-                    <Body>
-                        <Title>Thẻ</Title>
-                    </Body>
-                    <Right>
-                        <Button transparent>
-                            <Icon name="search" />
-                        </Button>
-                    </Right>
-                </Header>
-                <Content contentContainerStyle={{ flex: 1 }}>
-                    {this.state.Loading && <MenuCard2 bmembers={this.props.navigation.state.params.members} cdt={this.state.Card} listName={this.props.navigation.state.params.name}/>}
-                </Content>
-            </Container>
+                    </View>
+                    <View style={styles.section}>
+                        <View style={styles.wrapper}>
+                            <Text style={styles.title}>{this.state.Card.name}</Text>
+                        </View>
+                    </View>
+                    <View style={[styles.section, { paddingTop: 10 }]}>
+                        <View>
+                            <Text style={styles.subtitle}>{this.props.navigation.state.params.name}</Text>
+                        </View>
+                        <View>
+                            <Text style={styles.subtitle}>Due: {this.state.Card.deadline}</Text>
+                        </View>
+                    </View>
+                </View>
+
+                <View style={styles.menu}>
+                    <TouchableOpacity onPress={() => { this.changeIndex(0) }}>
+                        <View style={this.state.index == 0 ? [styles.icon, styles.activeBg] : [styles.icon, { backgroundColor: 'white' }]}>
+                            <Icon style={this.state.index == 0 ? styles.activeic : styles.ic} name="md-information-circle" />
+                        </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => { this.changeIndex(1) }}>
+                        <View style={this.state.index == 1 ? [styles.icon, styles.activeBg] : [styles.icon, { backgroundColor: 'white' }]}>
+                            <Icon style={this.state.index == 1 ? styles.activeic : styles.ic} name="md-list-box" />
+                        </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => { this.changeIndex(2) }}>
+                        <View style={this.state.index == 2 ? [styles.icon, styles.activeBg] : [styles.icon, { backgroundColor: 'white' }]}>
+                            <Icon style={this.state.index == 2 ? styles.activeic : styles.ic} name="md-attach" />
+                        </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => { this.changeIndex(3) }}>
+                        <View style={this.state.index == 3 ? [styles.icon, styles.activeBg] : [styles.icon, { backgroundColor: 'white' }]}>
+                            <Icon style={this.state.index == 3 ? styles.activeic : styles.ic} name="md-chatbubbles" />
+                        </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => { this.changeIndex(4) }}>
+                        <View style={this.state.index == 4 ? [styles.icon, styles.activeBg] : [styles.icon, { backgroundColor: 'white' }]}>
+                            <Icon style={this.state.index == 4 ? styles.activeic : styles.ic} name="md-more" />
+                        </View>
+                    </TouchableOpacity>
+                </View>
+
+                {this.state.Loading && this._renderTab()}
+            </View>
         );
     }
 }
 
 const styles = StyleSheet.create({
-    iconMenu: {
-        color: "gray"
+    container: {
+        flex: 1,
     },
-    active: {
-        backgroundColor: "#f44336",
+    header: {
+        //flex: 2,
+        backgroundColor: '#00A6FF',
+        //margin: 10,
+        flexDirection: 'column'
     },
-    con: {
-        alignItems: "center",
-        justifyContent: "center",
-        width: "100%",
-        height: 70,
+    menu: {
+        padding: 10,
+        backgroundColor: '#d4d6d5',
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        alignItems: 'center',
+    },
+    content: {
+        flex: 1,
+        backgroundColor: 'white',
+        //margin: 10,
+        marginTop: 10,
+        padding: 10
+    },
+    section: {
+        paddingTop: 5,
+        paddingBottom: 5,
+        paddingLeft: 15,
+        paddingRight: 15,
+        flexDirection: 'row',
+        justifyContent: 'space-between'
+    },
+    title: {
+        color: 'white',
+        fontSize: 20,
+        fontWeight: 'bold'
+    },
+    subtitle: {
+        color: 'white'
+    },
+    wrapper: {
+        paddingLeft: 20,
+    },
+    icon: {
+        width: 50,
+        height: 50,
+        borderRadius: 180,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    activeBg: {
+        backgroundColor: '#00A6FF'
+    },
+    activeic: {
+        color: 'white'
+    },
+    ic: {
+        color: '#00A6FF'
     }
 })

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, FlatList, TextInput, TouchableOpacity, Text } from 'react-native';
+import { View, StyleSheet, FlatList, TextInput, TouchableOpacity, Text, ScrollView, KeyboardAvoidingView } from 'react-native';
 import firebase from 'react-native-firebase';
-import { Icon, Thumbnail } from 'native-base';
+import { Icon, Thumbnail, Footer } from 'native-base';
 
 function Item({ data }) {
     return (
@@ -10,7 +10,7 @@ function Item({ data }) {
                 <Thumbnail small source={{ uri: data.avatar }} />
             </View>
             <View style={{ flex: 9, flexDirection: 'column', marginLeft: 10, backgroundColor: '#C0CCDA', borderRadius: 10, padding: 5 }}>
-                <Text style={{fontWeight: 'bold'}}>{data.uname}</Text>
+                <Text style={{ fontWeight: 'bold' }}>{data.uname}</Text>
                 <View style={{ marginTop: 5 }}>
                     <Text>{data.contents}</Text>
                 </View>
@@ -25,7 +25,8 @@ export default class Comment extends Component {
         super(props);
         this.state = {
             comments: [],
-            contents: ''
+            contents: '',
+            isScroll: false
         };
         this.ref = firebase.firestore().collection('cards').doc(this.props.data.id);
         this.unsubcriber = null;
@@ -58,6 +59,10 @@ export default class Comment extends Component {
             this.unsubcriber();
     }
 
+    scrollForTextInput = () => {
+        this.refs.scroll.scrollEnabled = true;
+    }
+
     render() {
         return (
             <View style={styles.container}>
@@ -70,25 +75,31 @@ export default class Comment extends Component {
                     //extraData={this.state.active}
                     />
                 </View>
-                <View style={styles.addComment}>
-                    <TextInput placeholder='Nhập bình luận...' style={{ borderWidth: 1, borderRadius: 30, flex: 9, height: 40 }}
-                        onChangeText={(text) => {
-                            this.setState({
-                                contents: text
-                            });
-                        }} />
-                    <TouchableOpacity style={{ flex: 1, alignItems: 'flex-end' }}
-                        onPress={() => {
-                            this.ref.collection('comments').add({
-                                uname: firebase.auth().currentUser.displayName,
-                                avatar: firebase.auth().currentUser.photoURL,
-                                contents: this.state.contents,
-                                timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                            });
-                        }}>
-                        <Icon type='FontAwesome' name='paper-plane' />
-                    </TouchableOpacity>
-                </View>
+                <Footer>
+                    <View style={styles.addComment}>
+                        <TextInput placeholder='Nhập bình luận...' style={{ borderWidth: 1, borderRadius: 30, flex: 9, height: 40 }}
+                            value={this.state.contents}
+                            onChangeText={(text) => {
+                                this.setState({
+                                    contents: text
+                                });
+                            }} />
+                        <TouchableOpacity style={{ flex: 1, alignItems: 'flex-end' }}
+                            onPress={() => {
+                                this.ref.collection('comments').add({
+                                    uname: firebase.auth().currentUser.displayName,
+                                    avatar: firebase.auth().currentUser.photoURL,
+                                    contents: this.state.contents,
+                                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                                });
+                                this.setState({
+                                    contents: ''
+                                })
+                            }}>
+                            <Icon type='FontAwesome' name='paper-plane' />
+                        </TouchableOpacity>
+                    </View>
+                </Footer>
             </View>
         );
     }
@@ -104,6 +115,8 @@ const styles = StyleSheet.create({
     addComment: {
         flex: 1,
         flexDirection: 'row',
-        alignItems: 'center'
+        alignItems: 'center',
+        backgroundColor: 'white',
+        padding: 5
     }
 });

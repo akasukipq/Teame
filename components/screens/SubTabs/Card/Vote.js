@@ -38,7 +38,7 @@ function Item({ data, show }) {
         </View>
     )
 };
-export default class More extends Component {
+export default class Vote extends Component {
     constructor(props) {
         super(props);
         this.state = {
