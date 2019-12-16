@@ -6,12 +6,10 @@ import {
     StyleSheet,
     Dimensions,
     Text,
-    FlatList,
-    SafeAreaView,
-    TextInput,
     Alert,
     Animated,
-    PanResponder
+    PanResponder,
+    TouchableOpacity
 } from 'react-native';
 import { Thumbnail } from 'native-base';
 import { withNavigation } from 'react-navigation';
@@ -21,6 +19,7 @@ import CardDetail from "./CardDetail";
 import { Icon } from 'native-base';
 import { bigStyles } from './Card/styles';
 import AddCard from '../../common/Card/AddCard';
+import Menu, { MenuItem, MenuDivider } from 'react-native-material-menu';
 
 const ScreenWidth = Dimensions.get("window").width;
 
@@ -190,7 +189,6 @@ class DetailTable extends Component {
 
     getCard = (data) => {
         this.dataCard = data;
-        //console.log("data = ", data);
     }
 
     _renderItem = ({ item, index }) => {
@@ -215,13 +213,50 @@ class DetailTable extends Component {
                 }}>
                 <View style={styles.header}>
                     <Text style={styles.title}>{item.name}</Text>
-                    <Icon name='md-more' />
+                    <Menu
+                        ref={component => this._menu = component}
+                        button={<TouchableOpacity style={{ paddingLeft: 10, paddingRight: 10 }}
+                            onPress={() => { this._menu.show() }}>
+                            <Icon name="more" style={{ color: 'white' }} />
+                        </TouchableOpacity>}
+                    >
+                        <MenuItem onPress={() => {
+                            Alert.alert(
+                                'Xóa danh sách',
+                                'Bạn muốn xóa danh sách này? Toàn bộ thẻ trong danh sách cũng sẽ bị xóa.',
+                                [
+                                    {
+                                        text: 'Hủy',
+                                        style: 'cancel',
+                                    },
+                                    {
+                                        text: 'Xóa', onPress: () => {
+                                            //xóa mọi thẻ có lid = this lid
+                                            firebase.firestore().collection('cards').where('lid', '==', item.id)
+                                                .get()
+                                                .then(query => {
+                                                    query.forEach(doc => {
+                                                        doc.ref.delete();
+                                                    });
+                                                });
+                                            
+                                            //xóa danh sách
+                                            this.ref.doc(item.id).delete();
+                                        }
+                                    },
+                                ],
+                                { cancelable: false },
+                            );
+                        }}>Xóa</MenuItem>
+                    </Menu>
+
                 </View>
                 <View style={styles.item}>
                     <CardDetail members={this.props.data.members} bid={this.props.data.id}
                         ListName={item.name} ListId={item.id} SlideId={index}
                         PanResponder={this._panResponder} getdt={this.getCard}
-                        setDrag={this.setDrag} navigation={this.props.navigation} />
+                        setDrag={this.setDrag} navigation={this.props.navigation}
+                        collectDeadline={this.props.addDeadline} />
                 </View>
                 <View>
                     <Button title="Thêm thẻ"
@@ -229,7 +264,7 @@ class DetailTable extends Component {
                             this.showModal(item.id);
                         }}></Button>
                 </View>
-            </View>
+            </View >
         )
     }
 
@@ -238,7 +273,7 @@ class DetailTable extends Component {
     }
 
     renderMember() {
-        if(!this.dataCard.cardmembers)
+        if (!this.dataCard.cardmembers)
             return false;
         return (this.props.data.members.map(val => (
             this.dataCard.cardmembers.includes(val.uid) && <Thumbnail key={val.uid} style={bigStyles.avatar} source={{ uri: val.avatar }}></Thumbnail>
@@ -251,25 +286,26 @@ class DetailTable extends Component {
                 <View
                     style={{ backgroundColor: "#e6e6e6", height: Dimensions.get("window").height, }}>
                     {this.state.isDrag &&
-                        <Animated.View style={[
-                            {width: Dimensions.get("window").width - 40},
-                            { zIndex: 10, position: 'absolute', top: this.state.locaY - 110, left: this.state.locaX },
-                            {
-                                transform: [
-                                    { translateX: this.state.pan.x },
-                                    { translateY: this.state.pan.y }
-                                ]
-                            },
-                        ]}>
+                        <Animated.View
+                            style={[
+                                { width: Dimensions.get("window").width - 40 },
+                                { zIndex: 10, position: 'absolute', top: this.state.locaY - 110, left: this.state.locaX },
+                                {
+                                    transform: [
+                                        { translateX: this.state.pan.x },
+                                        { translateY: this.state.pan.y }
+                                    ]
+                                },
+                            ]}>
                             <View style={styles.animatedContainer}>
-                                {this.dataCard.label && <Text style={{ color: item.label.color }}>{item.label.name}</Text>}
+                                {this.dataCard.cardlabel && <Text style={{ color: this.dataCard.cardlabel.color }}>{this.dataCard.cardlabel.name}</Text>}
                                 <View style={bigStyles.section}>
                                     <Text>{this.dataCard.cardname}</Text>
                                 </View>
-                                {this.dataCard.deadline &&
-                                    <View style={sbigStylestyles.section}>
+                                {this.dataCard.carddeadline &&
+                                    <View style={bigStyles.section}>
                                         <Icon name='md-time' style={[{ fontSize: 14 }, bigStyles.subcolor]} />
-                                        <Text style={[bigStyles.showdeadline, bigStyles.subcolor]}>{item.deadline}</Text>
+                                        <Text style={[bigStyles.showdeadline, bigStyles.subcolor]}>{this.dataCard.carddeadline}</Text>
                                     </View>}
                                 <View style={bigStyles.actionSec}>
                                     <View style={bigStyles.showInfo}>
@@ -299,8 +335,8 @@ class DetailTable extends Component {
                         swipeThreshold={0}
                         enableSnap={!this.state.isDrag}
                         layout={'default'}
-                        ref={(c) => { this._carousel = c; }}
                         data={this.state.listList}
+                        ref={(c) => { this._carousel = c; }}
                         renderItem={this._renderItem}
                         sliderWidth={Dimensions.get("window").width}
                         itemWidth={Dimensions.get("window").width - 40}
@@ -308,7 +344,7 @@ class DetailTable extends Component {
                         lockScrollWhileSnapping={true}
                     />
                 </View>
-                <AddCard ref={'modalThemThe'} list={this.state.listList}></AddCard>
+                <AddCard ref={'modalThemThe'} list={this.state.listList} bid={this.props.data.id}></AddCard>
             </View>
         );
     }

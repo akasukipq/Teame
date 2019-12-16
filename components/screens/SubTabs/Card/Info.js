@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Button, TextInput, Alert, TouchableOpacity, ScrollView, Text } from 'react-native';
+import { View, StyleSheet, Button, TextInput, Alert, TouchableOpacity, ScrollView, Text, Linking } from 'react-native';
 import firebase from 'react-native-firebase';
 import { Icon, DatePicker, Fab, Thumbnail } from 'native-base';
+import { withNavigation } from 'react-navigation';
 import AddLabel from '../../../common/Card/AddLabel';
 import AddMember from '../../../common/Card/AddMember';
 
@@ -10,7 +11,7 @@ const la = {
   color: 'pink'
 }
 
-export default class Info extends Component {
+class Info extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -22,7 +23,8 @@ export default class Info extends Component {
       label: this.props.data.label,
       membersUid: this.props.data.members, //member uid của card
       members: this.props.bmembers, //member trong bảng
-      membersCard: []
+      membersCard: [],
+      address:this.props.data.address
     };
   }
 
@@ -57,8 +59,7 @@ export default class Info extends Component {
 
   _renderMember() {
     //lọc ra member card trong member bảng
-    //console.log('member uid = ',this.props.data.members);
-    if (!this.state.membersUid) {
+    if (this.state.membersUid.length == 0) {
       return (
         <View style={[styles.avatar, { backgroundColor: 'green', }]}></View>
       )
@@ -76,6 +77,10 @@ export default class Info extends Component {
     )));
   }
 
+  openMap = () => {
+    this.props.navigation.navigate('Bản đồ');
+  }
+
   render() {
     let deadline = this.state.deadline ? this.fetchDeadline(this.state.deadline) : null;
     return (
@@ -83,7 +88,7 @@ export default class Info extends Component {
         <ScrollView>
 
           {this.state.editMode &&
-            <View style={styles.section}>
+            <View style={[styles.section, { paddingLeft: 5, paddingRight: 5 }]}>
               <View style={styles.title}>
                 <Icon name='md-bookmark' style={[styles.article, { fontSize: 14, }]}></Icon>
                 <Text style={[{ marginLeft: 5 }, styles.article]}>Tên thẻ</Text>
@@ -101,7 +106,7 @@ export default class Info extends Component {
             </View>
           }
 
-          <View style={styles.section}>
+          <View style={[styles.section, { paddingLeft: 5, paddingRight: 5 }]}>
             <View style={styles.title}>
               <Icon name='md-clipboard' style={[styles.article, { fontSize: 14, }]}></Icon>
               <Text style={[{ marginLeft: 5 }, styles.article]}>Mô tả</Text>
@@ -109,6 +114,7 @@ export default class Info extends Component {
             <View>
               {this.state.editMode ? <TextInput placeholder='Thêm mô tả...' placeholderTextColor="#d6d6d6"
                 defaultValue={this.state.describe} editable={this.state.editMode}
+                multiline={true}
                 onChangeText={(text) => {
                   this.setState({
                     describe: text
@@ -121,7 +127,7 @@ export default class Info extends Component {
           </View>
 
           <View style={styles.section}>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <View style={styles.box}>
               <View style={{ flex: 3 }}>
                 <View style={styles.title}>
                   <Icon type='FontAwesome5' name='user-friends' style={[styles.article, { fontSize: 14 }]}></Icon>
@@ -144,7 +150,7 @@ export default class Info extends Component {
           </View>
 
           <View style={styles.section}>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <View style={styles.box}>
               <View style={{ flex: 3 }}>
                 <View style={styles.title}>
                   <Icon name='md-pricetags' style={[styles.article, { fontSize: 14 }]}></Icon>
@@ -169,7 +175,7 @@ export default class Info extends Component {
           </View>
 
           <View style={styles.section}>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <View style={styles.box}>
               <View style={{ flex: 3 }}>
                 <View style={styles.title}>
                   <Icon name='md-time' style={[styles.article, { fontSize: 14 }]}></Icon>
@@ -205,6 +211,38 @@ export default class Info extends Component {
             </View>
           </View>
 
+          <View style={[styles.section, {
+            paddingLeft: 5,
+            paddingRight: 5
+          }]}>
+            <View style={styles.title}>
+              <Icon type='FontAwesome' name='map-marker' style={[styles.article, { fontSize: 14, }]}></Icon>
+              <Text style={[{ marginLeft: 5 }, styles.article]}>Địa điểm</Text>
+            </View>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <View style={{ flex: 8 }}>
+                {this.state.editMode ? <TextInput placeholder="Nhập địa điểm..."
+                  multiline={true}
+                  onChangeText={(text) => {
+                    this.setState({
+                      address: text
+                    });
+                  }} /> :
+                  <Text style={styles.content}>{this.state.address}</Text>}
+              </View>
+
+              <TouchableOpacity
+                style={{ flex: 2 }}
+                onPress={() => {
+                  Linking.openURL(`geo:0,0?q=${this.state.address}`);
+                }}>
+                <Text>Mở map</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.border}>
+            </View>
+          </View>
+
 
           {this.state.editMode &&
             <View style={styles.section}>
@@ -214,7 +252,8 @@ export default class Info extends Component {
                   describe: this.state.describe,
                   deadline: this.state.deadline,
                   label: this.state.label,
-                  members: this.state.membersUid
+                  members: this.state.membersUid,
+                  address: this.state.address
                 });
               }}>
                 <Text style={{ fontSize: 16 }}>Lưu thay đổi</Text>
@@ -260,6 +299,8 @@ export default class Info extends Component {
   }
 }
 
+export default withNavigation(Info);
+
 const styles = StyleSheet.create({
   section: {
     //margin: 10
@@ -273,7 +314,7 @@ const styles = StyleSheet.create({
     color: 'gray'
   },
   content: {
-    marginTop: 10
+    marginTop: 10,
   },
   border: {
     marginTop: 10,
@@ -282,7 +323,7 @@ const styles = StyleSheet.create({
   },
   tag: {
     padding: 10,
-    marginRight: 10,
+    //marginRight: 10,
     borderRadius: 5,
     justifyContent: 'center',
     alignItems: 'center'
@@ -291,6 +332,11 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 5,
-    marginRight: 10,
+  },
+  box: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingLeft: 5,
+    paddingRight: 5
   }
 })

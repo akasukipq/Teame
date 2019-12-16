@@ -79,6 +79,7 @@ export default class CardViewScreen extends Component {
                     label: doc.data().label,
                     members: doc.data().members,
                     lid: doc.data().lid,
+                    address: doc.data().address
                 });
                 this.setState({ Card, Loading: true });
             }
@@ -98,10 +99,10 @@ export default class CardViewScreen extends Component {
             <View style={{ flex: 1 }}>
                 <View style={styles.header}>
                     <View style={[styles.section, { paddingTop: 10 }]}>
-                        <TouchableOpacity onPress={() => { this.props.navigation.goBack() }}>
+                        <TouchableOpacity onPress={() => { this.props.navigation.goBack(null) }}>
                             <Icon name="arrow-back" style={{ color: 'white' }} />
                         </TouchableOpacity>
-                        <Menu
+                        <Menu 
                             ref={'menu'}
                             button={<TouchableOpacity style={{ paddingLeft: 10, paddingRight: 10 }}
                                 onPress={() => { this.refs.menu.show() }}>

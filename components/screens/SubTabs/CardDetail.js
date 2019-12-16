@@ -32,7 +32,28 @@ export default class CardDetail extends Component {
                     members: doc.data().members
 
                 });
+
+                if (doc.data().deadline) {
+                    let event = {
+                        deadline: doc.data().deadline,
+                        cardDetail: {
+                            id: doc.id,
+                            lname: this.props.ListName,
+                            bmembers: this.props.members,
+                            name: doc.data().name,
+                            describe: doc.data().describe,
+                            deadline: doc.data().deadline,
+                            label: doc.data().label,
+                            numComment: doc.data().numComment,
+                            numList: doc.data().numList,
+                            numAttach: doc.data().numAttach,
+                            members: doc.data().members
+                        }
+                    }
+                    this.props.collectDeadline(event);
+                }
             });
+
             this.setState({
                 listCard: card,
             });
@@ -55,6 +76,7 @@ export default class CardDetail extends Component {
     }
 
     _renderItem = ({ item }) => {
+        console.log('full ', item);
         return (
             <View>
                 <View
@@ -67,6 +89,8 @@ export default class CardDetail extends Component {
                             let data = {
                                 cardid: item.id,
                                 cardname: item.name,
+                                cardlabel: item.label,
+                                carddeadline: item.deadline,
                                 cardmembers: item.members,
                                 numComment: item.numComment,
                                 numList: item.numList,
@@ -120,13 +144,11 @@ export default class CardDetail extends Component {
 
     render() {
         return (
-            <View>
-                <FlatList
-                    data={this.state.listCard}
-                    renderItem={this._renderItem}
-                    keyExtractor={item => item.id}
-                />
-            </View>
+            <FlatList
+                data={this.state.listCard}
+                renderItem={this._renderItem}
+                keyExtractor={item => item.id}
+            />
         );
     }
 }

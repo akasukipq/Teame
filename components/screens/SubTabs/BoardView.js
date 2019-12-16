@@ -7,18 +7,24 @@ import { Icon, Fab, Thumbnail } from 'native-base';
 function _render(data) {
     return (
         data.map(val => (
-            <Thumbnail key={val.uid} style={styles.avatar} source={{uri: val.avatar}}></Thumbnail>
+            <Thumbnail key={val.uid} style={styles.avatar} source={{ uri: val.avatar }}></Thumbnail>
         ))
     )
 }
 function Item({ data, navigation }) {
+    let date = new Date(parseInt(data.timestamp));
     return (
         <View style={styles.itemContainer}>
             <TouchableOpacity onPress={() => {
                 navigation.navigate("Chi tiết bảng", data);
             }}>
-                <View>
-                    <Text style={{ fontSize: 16, fontWeight: '700' }}>{data.name}</Text>
+                <View style={{ flexDirection: 'row' }}>
+                    <View style={{ flex: 9 }}>
+                        <Text style={{ fontSize: 16, fontWeight: '700' }}>{data.name}</Text>
+                    </View>
+                    <View style={{ flex: 1 }}>
+                        {data.primary && <Icon name='md-star-outline' />}
+                    </View>
                 </View>
                 <View style={styles.itemMember}>
                     {_render(data.members)}
@@ -29,7 +35,7 @@ function Item({ data, navigation }) {
                     </View>
                     <View style={styles.deadline}>
                         <Icon name='md-time' style={{ fontSize: 14 }} />
-                        <Text style={styles.showdeadline}>Hôm nay - 23/12/2019</Text>
+                        {date && <Text style={styles.showdeadline}>Ngày tạo: {date.getDate()}/{date.getMonth() + 1}/{date.getFullYear()}</Text>}
                     </View>
                 </View>
             </TouchableOpacity>
@@ -77,6 +83,8 @@ class BoardView extends Component {
                 boards.push({
                     id: board.id,
                     name: board.data().name,
+                    primary: board.data().primary,
+                    timestamp: board.data().timestamp,
                     members: users
                 })
             });
@@ -94,7 +102,7 @@ class BoardView extends Component {
     }
 
     render() {
-        console.log("LIST = ", this.state.listBoard);
+        console.log("toàn bộ bảng = ", this.state.listBoard);
         return (
             <View style={styles.container}>
                 <View style={{ marginLeft: 15 }}>

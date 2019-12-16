@@ -25,9 +25,9 @@ export default class AddCard extends Component {
 
     _renderMember() {
         return (this.props.members.map(val => (
-            <View key={val.uid} style={{ flexDirection: 'row' }}>
+            <View key={val.uid} style={{ flexDirection: 'row', marginTop: 10 }}>
                 <View style={{ flex: 2 }}>
-                    <Thumbnail source={{ uri: val.avatar }}></Thumbnail>
+                    <Thumbnail small source={{ uri: val.avatar }}></Thumbnail>
                 </View>
                 <View style={{ flex: 6, justifyContent: 'center', paddingLeft: 5 }}>
                     <Text>{val.name}</Text>

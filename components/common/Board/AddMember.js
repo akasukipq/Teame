@@ -11,19 +11,19 @@ function User({ data, bid, bname }) {
                 <Text>{data.name}</Text>
             </View>
             <TouchableOpacity style={{ flex: 2 }}
-            onPress={() => {
-                firebase.firestore().collection('requests').add({
-                    from: firebase.auth().currentUser.displayName,
-                    to: data.uid,
-                    toToken: data.token, //token used to push notification
-                    type: 'invite',
-                    payload: {
-                        'bid': bid,
-                        'bname': bname
-                    },
-                    status: false
-                })
-            }}>
+                onPress={() => {
+                    firebase.firestore().collection('requests').add({
+                        from: firebase.auth().currentUser.displayName,
+                        to: data.uid,
+                        toToken: data.token, //token used to push notification
+                        type: 'invite',
+                        payload: {
+                            'bid': bid,
+                            'bname': bname
+                        },
+                        status: false
+                    })
+                }}>
                 <Text style={{ color: 'blue' }}>THÊM</Text>
             </TouchableOpacity>
         </View>
@@ -89,7 +89,9 @@ export default class AddBoard extends Component {
                 </View>
                 <View style={{ marginTop: 10 }}>
                     <Item rounded>
-                        <Input placeholder='Nhập email hoặc tên...' keyboardType="email-address"
+                        <Input
+                            style={{ height: 40 }}
+                            placeholder='Nhập email hoặc tên...' keyboardType="email-address"
                             onSubmitEditing={() => {
                             }} />
                         <Icon name='md-search' />

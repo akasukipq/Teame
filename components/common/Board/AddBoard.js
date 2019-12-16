@@ -45,12 +45,14 @@ export default class AddBoard extends Component {
                 </View>
                 <View style={{ flexDirection: 'row-reverse', marginTop: 15, alignItems: 'flex-end' }}>
                     <TouchableOpacity style={{ marginLeft: 10 }} onPress={() => {
+                        const timestamp = Date.now().toString();
                         firebase.firestore().collection('boards').add({
                             name: this.state.name,
                             primary: false,
                             members: [
                                 firebase.auth().currentUser.uid
-                            ]
+                            ],
+                            timestamp: timestamp
                         });
                         //đóng modal
                         this.refs.modal.close();

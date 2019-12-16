@@ -24,11 +24,6 @@ export default class TableScreen extends Component {
     return (
       <Container>
         <Header>
-          <Left>
-            <Button transparent>
-              <Icon name="arrow-back" />
-            </Button>
-          </Left>
           <Body>
             <Title>Bảng</Title>
           </Body>
@@ -36,13 +31,10 @@ export default class TableScreen extends Component {
             <Button transparent>
               <Icon name="search" />
             </Button>
-            <Button transparent>
-              <Icon name="notifications" />
-            </Button>
           </Right>
         </Header>
         <Content contentContainerStyle={{ flex: 1 }}>
-        <AddBoard ref={'modalThemBang'}></AddBoard>
+          <AddBoard ref={'modalThemBang'}></AddBoard>
           <BoardView modal={this.showAdd} />
         </Content>
       </Container>

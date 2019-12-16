@@ -71,7 +71,10 @@ export default class AddCard extends Component {
                     <TouchableOpacity style={{ marginLeft: 10 }} onPress={() => {
                         firebase.firestore().collection('cards').add({
                             name: this.state.name,
-                            lid: this.state.selectedList
+                            lid: this.state.selectedList,
+                            bid: this.props.bid,
+                            members: [],
+                            label: null
                         });
                         //đóng modal
                         this.refs.modal.close();

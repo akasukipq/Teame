@@ -23,6 +23,7 @@ import {
   ProfileScreen
 } from './components/screens';
 import Members from './components/screens/SubTabs/Drawer/Members';
+import Calendars from './components/screens/SubTabs/Drawer/Calendars';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons'
@@ -35,15 +36,19 @@ import type { Notification } from 'react-native-firebase';
 
 const DrawerStack = createStackNavigator({
   "Chi tiết bảng": TableDetailScreen,
-  "Thành viên": Members
+  "Thành viên": Members,
+  "Lịch": Calendars,
+  "Chi tiết card": CardViewScreen
 }, {
   headerMode: 'none'
 });
+
 
 const TableStack = createStackNavigator({
   "Bảng": TableScreen,
   "Chi tiết bảng": DrawerStack,
   "Chi tiết card": CardViewScreen
+
 }, {
   headerMode: 'none',
 });
