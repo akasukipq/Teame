@@ -3,13 +3,11 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-nativ
 import Modal from 'react-native-modalbox';
 import firebase from 'react-native-firebase';
 
-
-export default class AddBoard extends Component {
+export default class UpdateName extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            name: '',
-            choosen: '',
+            name: ''
         };
     }
 
@@ -32,7 +30,7 @@ export default class AddBoard extends Component {
                 backdrop={true}
                 coverScreen={true}>
                 <View>
-                    <Text style={{ fontSize: 18 }}>Thêm bảng</Text>
+                    <Text style={{ fontSize: 18 }}>Đổi tên bảng</Text>
                 </View>
                 <View>
                     <TextInput placeholder="Tên bảng..." placeholderTextColor="grey" style={{ borderBottomWidth: 1, fontSize: 16 }}
@@ -44,19 +42,13 @@ export default class AddBoard extends Component {
                 </View>
                 <View style={{ flexDirection: 'row-reverse', marginTop: 15, alignItems: 'flex-end' }}>
                     <TouchableOpacity style={{ marginLeft: 10 }} onPress={() => {
-                        const timestamp = Date.now().toString();
-                        firebase.firestore().collection('boards').add({
-                            name: this.state.name,
-                            primary: false,
-                            members: [
-                                firebase.auth().currentUser.uid
-                            ],
-                            timestamp: timestamp
-                        });
+                        firebase.firestore().collection('boards').doc(this.props.id).update({
+                            name: this.state.name
+                        })
                         //đóng modal
                         this.refs.modal.close();
                     }}>
-                        <Text>THÊM</Text>
+                        <Text>XÁC NHẬN</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={{ marginRight: 10 }}
                         onPress={() => {
@@ -69,8 +61,3 @@ export default class AddBoard extends Component {
         );
     }
 }
-const styles = StyleSheet.create({
-    section: {
-        marginTop: 10
-    }
-})

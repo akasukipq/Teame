@@ -1,15 +1,14 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, TextInput, Button, TouchableOpacity } from 'react-native';
-import { Container, Header, Content, Body, Left, Icon, Title, Right, Thumbnail, Text } from 'native-base';
+import { View, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { Container, Header, Button, Body, Left, Icon, Title, Right, Thumbnail, Text, Form, Label, Input, Item } from 'native-base';
 import DocumentPicker from 'react-native-document-picker';
-import RNFetchBlob from 'rn-fetch-blob';
 import firebase from 'react-native-firebase';
 export default class ProfileScreen extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            name: '',
-            email: '',
+            name: this.props.navigation.state.params.name,
+            email: this.props.navigation.state.params.email,
             photoURL: '',
             photoName: '',
             photoType: '',
@@ -20,6 +19,7 @@ export default class ProfileScreen extends Component {
     }
 
     imagePicker = () => {
+        let user = this.props.navigation.state.params;
         DocumentPicker.pick({
             type: [DocumentPicker.types.images],
         }).then(val => {
@@ -28,99 +28,100 @@ export default class ProfileScreen extends Component {
                 photoName: val.name,
                 photoType: val.type
 
-            })
-            RNFetchBlob.fs.stat(val.uri)
+            });
+            this.storageRef.ref('avatars').child(val.name).putFile(val.uri, { contentType: val.type, cacheControl: 'no-store' })
+                .then(image => {
+                    let metadata = image.metadata;
+                    //then we get url base on metadata.name in storage
+                    this.storageRef.ref('avatars').child(metadata.name).getDownloadURL()
+                        .then(url => {
+                            this.setState({ photoURL: url })
+                        });
+                });
+            /*RNFetchBlob.fs.stat(val.uri)
                 .then(stats => {
                     console.log('path = ', 'file://' + stats.path);
                     this.setState({
                         photoURL: 'file://' + stats.path
                     })
                 });
+                */
         }).catch(error => console.log(error));
     }
 
+
     render() {
-        let user = this.props.navigation.state.params.user;
+        let user = this.props.navigation.state.params;
         return (
             <Container>
-                <Header>
+                <Header noShadow>
                     <Left>
-                        <TouchableOpacity transparent>
-                            <Icon name="md-close" />
-                        </TouchableOpacity>
+                        <Button transparent>
+                            <Icon name="arrow-back" color="white" />
+                        </Button>
                     </Left>
-                    <Body>
-                        <Title>Chỉnh sửa thông tin cá nhân</Title>
+                    <Body >
+                        <Title>Sửa thông tin</Title>
                     </Body>
+                    <Right>
+                        <Button transparent
+                            onPress={() => {
+                                if (this.state.photoURL != '') {
+                                    //có thay đổi ảnh
+                                    firebase.auth().currentUser.updateProfile({
+                                        photoURL: url
+                                    }).then(() => {
+                                        //update trong firestore
+                                        firebase.firestore().collection('users').doc(user.uid).update({
+                                            photoURL: url
+                                        });
+                                    });
+                                }
+
+                                //có thay đổi tên
+                                firebase.auth().currentUser.updateProfile({
+                                    displayName: this.state.name,
+                                    email: this.state.email
+                                }).then(() => {
+                                    //update trong firestore
+                                    firebase.firestore().collection('users').doc(user.uid).update({
+                                        name: this.state.name,
+                                        email: this.state.email
+                                    }).then(() => {Alert.alert('Thông báo', 'Cập nhật thông tin thành công!')});
+                                    //update state
+                                    this.setState({
+                                        name: ''
+                                    });
+                                    
+                                });
+                            }}>
+                            <Title>LƯU</Title>
+                        </Button>
+                    </Right>
                 </Header>
                 <View>
-                    <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 10 }}>
-                        <View style={styles.pro5}>
-                            <Text>Ảnh đại diện</Text>
-                        </View>
+                    <View style={{ backgroundColor: '#3F51B5', justifyContent: 'center', alignItems: 'center', padding: 10 }}>
                         <TouchableOpacity
                             onPress={() => { this.imagePicker() }}>
-                            <Thumbnail style={styles.pro5} large source={{ uri: this.state.photoURL ? this.state.photoURL : user.photoURL }} />
+                            <Thumbnail large style={styles.pro5} large source={{ uri: this.state.photoURL ? this.state.photoURL : user.photoURL }} />
                         </TouchableOpacity>
                     </View>
                     <View>
-                        <View>
-                            <Text style={{ marginLeft: 10 }}>Tên hiển thị</Text>
-                            <TextInput defaultValue={user.name} placeholder="John Doe..." style={{ borderColor: 'gray', borderWidth: 1, margin: 10 }}
-                                onChangeText={(text) => { this.setState({ name: text }) }} />
-                        </View>
-                        <View>
-                            <Text style={{ marginLeft: 10 }}>Email</Text>
-                            <TextInput defaultValue={user.email} placeholder="yourmail@mail.com..." style={{ borderColor: 'gray', borderWidth: 1, margin: 10 }}
-                                onChangeText={(text) => { this.setState({ email: text }) }} />
-                        </View>
-                        <View>
-                            <Text style={{ marginLeft: 10 }}>Khác</Text>
-                            <TextInput placeholder="Nói gì đó về bạn..." style={{ borderColor: 'gray', borderWidth: 1, margin: 10 }} />
-                        </View>
-                        <View style={{ margin: 10 }}>
-                            <Button title="Lưu"
-                                onPress={() => {
-                                    console.log('tên = ', this.state.name, ' ảnh = ', this.state.photoURL);
-                                    if (this.state.photoURL != '') {
-                                        //lưu lên storage
-                                        this.storageRef.ref('avatars').child(this.state.photoName).putFile(this.state.photoURL, { contentType: this.state.photoType, cacheControl: 'no-store' })
-                                            .then(image => {
-                                                let metadata = image.metadata;
-                                                //then we get url base on metadata.name in storage
-                                                this.storageRef.ref('avatars').child(metadata.name).getDownloadURL()
-                                                    .then(url => {
-                                                        //có thay đổi ảnh
-                                                        firebase.auth().currentUser.updateProfile({
-                                                            photoURL: url
-                                                        }).then(() => {
-                                                            //update trong firestore
-                                                            firebase.firestore().collection('users').doc(user.uid).update({
-                                                                photoURL: url
-                                                            });
-                                                        });
-                                                    });
-                                            })
-                                    };
-                                    if (this.state.name != '' && this.state.name != user.displayName) {
-                                        //có thay đổi tên
-                                        firebase.auth().currentUser.updateProfile({
-                                            displayName: this.state.name
-                                        }).then(() => {
-                                            //update trong firestore
-                                            firebase.firestore().collection('users').doc(user.uid).update({
-                                                name: this.state.name
-                                            });
-                                            //update state
-                                            this.setState({
-                                                name: ''
-                                            });
-                                        });
-                                    };
-                                }}></Button>
-                        </View>
+                        <Form>
+                            <Item stackedLabel>
+                                <Label>Tài khoản</Label>
+                                <Input defaultValue={user.name} placeholder="John Doe..."
+                                    onChangeText={(text) => { this.setState({ name: text }) }} />
+                            </Item>
+                            <Item stackedLabel last>
+                                <Label>Email</Label>
+                                <Input defaultValue={user.email} placeholder="yourmail@mail.com..."
+                                    onChangeText={(text) => { this.setState({ email: text }) }} />
+                            </Item>
+                        </Form>
                     </View>
                 </View>
+                
             </Container>
 
         );

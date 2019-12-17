@@ -1,15 +1,14 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import Modal from 'react-native-modalbox';
 import firebase from 'react-native-firebase';
 
 
-export default class AddBoard extends Component {
+export default class UpdatePass extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            name: '',
-            choosen: '',
+            pass: ''
         };
     }
 
@@ -25,38 +24,40 @@ export default class AddBoard extends Component {
                     borderRadius: 5,
                     shadowRadius: 10,
                     width: 300,
-                    height: 150,
+                    height: null,
                     padding: 20
                 }}
                 position='center'
                 backdrop={true}
                 coverScreen={true}>
                 <View>
-                    <Text style={{ fontSize: 18 }}>Thêm bảng</Text>
+                    <Text style={{ fontSize: 18 }}>Đổi mật khẩu</Text>
                 </View>
                 <View>
-                    <TextInput placeholder="Tên bảng..." placeholderTextColor="grey" style={{ borderBottomWidth: 1, fontSize: 16 }}
+                    <TextInput placeholder="Mật khẩu mới..." placeholderTextColor="grey"
+                        style={{ borderBottomWidth: 1, fontSize: 16 }}
                         onChangeText={(text) => {
                             this.setState({
-                                name: text
+                                pass: text
                             })
                         }}></TextInput>
                 </View>
                 <View style={{ flexDirection: 'row-reverse', marginTop: 15, alignItems: 'flex-end' }}>
                     <TouchableOpacity style={{ marginLeft: 10 }} onPress={() => {
-                        const timestamp = Date.now().toString();
-                        firebase.firestore().collection('boards').add({
-                            name: this.state.name,
-                            primary: false,
-                            members: [
-                                firebase.auth().currentUser.uid
-                            ],
-                            timestamp: timestamp
-                        });
-                        //đóng modal
-                        this.refs.modal.close();
+                        if(this.state.pass != '')
+                        {
+                            firebase.auth().currentUser.updatePassword(this.state.pass).then(function() {
+                                // Update successful.
+                                Alert.alert('Thông báo', 'Cập nhật mật khẩu thành công!');
+                                this.refs.modal.close();
+                              }).catch(function(error) {
+                                // An error happened.
+                                Alert.alert('Lỗi', 'Cập nhật mật khẩu thất bại!');
+                              });
+                        }
+                        
                     }}>
-                        <Text>THÊM</Text>
+                        <Text>XÁC NHẬN</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={{ marginRight: 10 }}
                         onPress={() => {

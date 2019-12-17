@@ -3,6 +3,7 @@ import { View, Text, Dimensions, Alert } from 'react-native';
 import { Container, Header, Content, Button, Title, Body, Right, Left, Icon } from 'native-base';
 import DetailTable from '../SubTabs/DetailTable';
 import AddList from '../../common/Card/AddList';
+import UpdateName from '../../common/Board/UpdateName';
 import DrawerLayout from 'react-native-gesture-handler/DrawerLayout';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import firbase from 'react-native-firebase';
@@ -19,7 +20,8 @@ export default class TableDetailScreen extends Component {
             listDeadline: [],
             listDeadlineDate: []
         };
-        this.showModal = this.showModal.bind(this);
+        this.showModalThemDs = this.showModalThemDs.bind(this);
+        this.showModalUpdateName = this.showModalUpdateName.bind(this);
     };
 
     componentDidMount() {
@@ -55,9 +57,13 @@ export default class TableDetailScreen extends Component {
         });
     }
 
-    showModal(id) {
+    showModalThemDs(id) {
         this.refs.modalThemDs.show(id);
     };
+
+    showModalUpdateName() {
+        this.refs.modalUpdateName.show();
+    }
 
     renderDrawer = () => {
         return (
@@ -93,6 +99,13 @@ export default class TableDetailScreen extends Component {
                             <Text>Đánh dấu sao bảng</Text>
                         </TouchableOpacity>
                     }
+                    <TouchableOpacity style={{ marginBottom: 30 }}
+                        onPress={() => {
+                            this.showModalUpdateName();
+                        }}>
+                        <Text>Sửa tên bảng</Text>
+                    </TouchableOpacity>
+
                     <TouchableOpacity style={{ marginBottom: 30 }}
                         onPress={() => {
                             Alert.alert(
@@ -152,7 +165,7 @@ export default class TableDetailScreen extends Component {
                         </Body>
                         <Right>
                             <Button transparent onPress={() => {
-                                this.showModal(this.state.tbdata.id);
+                                this.showModalThemDs(this.state.tbdata.id);
                             }}>
                                 <Icon name="md-add" />
                             </Button>
@@ -167,6 +180,7 @@ export default class TableDetailScreen extends Component {
                     <Content contentContainerStyle={{ flex: 1 }}>
                         <DetailTable data={this.state.tbdata} addDeadline={this.addDeadline} />
                         <AddList ref={'modalThemDs'}></AddList>
+                        <UpdateName ref={'modalUpdateName'} id={this.state.tbdata.id}></UpdateName>
                     </Content>
                 </DrawerLayout>
             </Container>

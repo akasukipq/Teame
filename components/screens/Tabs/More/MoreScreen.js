@@ -2,11 +2,12 @@ import React, { Component } from 'react';
 import {
   View,
   Text,
-  StyleSheet
+  StyleSheet,
+  TouchableOpacity
 } from 'react-native';
-import { Container, Header, Content, Body, Left, Icon, Title, Right, Button, Thumbnail } from 'native-base';
+import { Container, Header, Content, Body, Left, Icon, Title, Right, Thumbnail, List, ListItem } from 'native-base';
 import firebase from 'react-native-firebase';
-
+import UpdatePass from '../../../common/More/UpdatePass';
 export default class MoreScreen extends Component {
 
   constructor(props) {
@@ -15,6 +16,7 @@ export default class MoreScreen extends Component {
       user: null
     }
     this.unsubscriber = null;
+    this.showModalUpdatePass = this.showModalUpdatePass.bind(this);
   }
 
   componentDidMount() {
@@ -26,33 +28,75 @@ export default class MoreScreen extends Component {
       });
   }
 
+  showModalUpdatePass() {
+    this.refs.modalUpdatePass.show();
+  }
+
   render() {
     //console.log('user = ', this.state.user);
     return (
       <Container>
-        <Header>
-          <Left>
-            <Button transparent>
-              <Icon name="arrow-back" />
-            </Button>
-          </Left>
-          <Body>
-            <Title>Thêm</Title>
+        <Header noShadow>
+          <Left style={{ flex: 0 }} />
+          <Body style={{ flex: 3, padding: 10 }}>
+            <Title>Cài đặt</Title>
           </Body>
-          <Right />
+          <Right style={{ flex: 0 }} />
         </Header>
         <Content>
-          {this.state.user && <View style={{ alignItems: 'center', justifyContent: 'center', padding: 10 }}>
-            <Thumbnail style={styles.pro5} large source={{ uri: this.state.user.photoURL }} />
-            <View style={styles.pro5}>
-              <Text>{this.state.user.name}</Text>
-            </View>
-            <View style={styles.pro5}>
-              <Text>{this.state.user.email}</Text>
-            </View>
-            <Button onPress={() => { this.props.navigation.navigate('Pro5', { user: this.state.user }) }}><Text>Chỉnh sửa</Text></Button>
-          </View>}
+          {this.state.user &&
+            <>
+              <View style={{
+                backgroundColor: '#3F51B5', flexDirection: 'row', alignItems: 'center',
+                paddingTop: 10, paddingLeft: 15, paddingRight: 15, paddingBottom: 25
+              }}>
+                <View style={{ flex: 2 }}>
+                  <Thumbnail source={{ uri: this.state.user.photoURL }} style={{ marginRight: 10 }} />
+                </View>
+                <View style={{ flexDirection: 'column', flex: 7 }}>
+                  <Text style={{ color: 'white' }}>{this.state.user.email}</Text>
+                  <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 18 }}>{this.state.user.name}</Text>
+                </View>
+                <TouchableOpacity onPress={() => { this.props.navigation.navigate('Pro5', this.state.user) }}>
+                  <Icon name="pencil-square" type="FontAwesome" style={{ color: 'white', flex: 1 }} />
+                </TouchableOpacity>
+              </View>
+            </>
+          }
+          <List>
+            <ListItem itemDivider>
+              <Text>Cài đặt tài khoản</Text>
+            </ListItem>
+            <ListItem onPress={() => { this.showModalUpdatePass() }}>
+              <Left>
+                  <Text>Đổi mật khẩu</Text>
+              </Left>
+              <Right>
+                <Icon name="arrow-forward" />
+              </Right>
+            </ListItem>
+            <ListItem itemDivider>
+              <Text>Hỗ trợ</Text>
+            </ListItem>
+            <ListItem>
+              <Left>
+                <Text>Liên hệ hỗ trợ</Text>
+              </Left>
+              <Right>
+                <Icon name="arrow-forward" />
+              </Right>
+            </ListItem>
+            <ListItem>
+              <Left>
+                <Text>Đăng xuất</Text>
+              </Left>
+              <Right>
+                <Icon name="arrow-forward" />
+              </Right>
+            </ListItem>
+          </List>
         </Content>
+        <UpdatePass ref={'modalUpdatePass'}></UpdatePass>
       </Container>
     )
   }
