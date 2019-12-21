@@ -9,6 +9,7 @@ import TodoDetailScreen from './Tabs/TodoDetailScreen';
 import RegisterScreen from "./Tabs/RegisterScreen";
 import CardViewScreen from './Tabs/CardViewScreen';
 import NotyScreen from './Tabs/NotyScreen';
+import SearchScreen from './Tabs/SearchScreen';
 
 export {
     HomeScreen,
@@ -21,5 +22,6 @@ export {
     CardViewScreen,
     RegisterScreen,
     NotyScreen,
-    ProfileScreen
+    ProfileScreen,
+    SearchScreen
 }

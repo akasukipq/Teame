@@ -20,7 +20,8 @@ import {
   TodoDetailScreen,
   CardViewScreen,
   NotyScreen,
-  ProfileScreen
+  ProfileScreen,
+  SearchScreen
 } from './components/screens';
 import Members from './components/screens/SubTabs/Drawer/Members';
 import Calendars from './components/screens/SubTabs/Drawer/Calendars';
@@ -47,7 +48,8 @@ const DrawerStack = createStackNavigator({
 const TableStack = createStackNavigator({
   "Bảng": TableScreen,
   "Chi tiết bảng": DrawerStack,
-  "Chi tiết card": CardViewScreen
+  "Chi tiết card": CardViewScreen,
+  "Tìm kiếm": SearchScreen
 
 }, {
   headerMode: 'none',

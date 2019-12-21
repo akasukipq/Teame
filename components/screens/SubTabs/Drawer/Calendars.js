@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
 import { Container, Header, Content, Button, Title, Body, Right, Left, Icon, Thumbnail } from 'native-base';
+import _renderCard from '../../../common/Card/RenderCard';
+import RenderCard from '../../../common/Card/RenderCard';
 
 export default class Calendars extends Component {
     constructor(props) {
@@ -216,63 +218,6 @@ export default class Calendars extends Component {
             </View>);
     }
 
-    renderMember(card) {
-        if (!card.members)
-            return false;
-        return (card.bmembers.map(val => (
-            card.members.includes(val.uid) && <Thumbnail key={val.uid} style={styles.avatar} source={{ uri: val.avatar }}></Thumbnail>
-        )));
-    }
-
-    _renderCard = ({ item }) => {
-        return (
-            <TouchableOpacity
-                style={{
-                    padding: 10,
-                    borderWidth: 1,
-                    marginTop: 10
-                }}
-                onPress={() => {
-                    this.props.navigation.navigate("Chi tiết card", { id: item.id, name: item.lname, members: item.bmembers });
-                }}>
-
-                {item.label && <Text style={{ color: item.label.color }}>{item.label.name}</Text>}
-
-                <View style={styles.section}>
-                    <Text>{item.name}</Text>
-                </View>
-                {item.deadline &&
-                    <View style={styles.section}>
-                        <Icon name='md-time' style={[{ fontSize: 14 }, styles.subcolor]} />
-                        <Text style={[styles.showdeadline, styles.subcolor]}>{item.deadline}</Text>
-                    </View>}
-                <View style={styles.actionSec}>
-                    <View style={styles.showInfo}>
-
-                        {item.numList != 0 && <View style={{ marginRight: 10, flexDirection: 'row', alignItems: 'center' }}>
-                            <Icon name='md-list' style={[{ fontSize: 14 }, styles.subcolor]} />
-                            <Text style={[styles.showdeadline, styles.subcolor]}>{item.numList}</Text>
-                        </View>}
-                        {item.numAttach != 0 &&
-                            <View style={{ marginRight: 10, flexDirection: 'row', alignItems: 'center' }}>
-                                <Icon name='md-attach' style={[{ fontSize: 14 }, styles.subcolor]} />
-                                <Text style={[styles.showdeadline, styles.subcolor]}>{item.numAttach}</Text>
-                            </View>}
-                        {item.numComment != 0 &&
-                            <View style={{ marginRight: 10, flexDirection: 'row', alignItems: 'center' }}>
-                                <Icon name='md-chatboxes' style={[{ fontSize: 14 }, styles.subcolor]} />
-                                <Text style={[styles.showdeadline, styles.subcolor]}>{item.numComment}</Text>
-                            </View>}
-                    </View>
-                    <View style={styles.member}>
-                        {this.renderMember(item)}
-                    </View>
-                </View>
-            </TouchableOpacity>
-        )
-    }
-
-
     render() {
 
         return (
@@ -308,7 +253,7 @@ export default class Calendars extends Component {
                         <FlatList
                             scrollEnabled={true}
                             data={this.state.dataCard}
-                            renderItem={this._renderCard}
+                            renderItem={({ item }) => <RenderCard item={item} navigation={this.props.navigation} />}
                             keyExtractor={item => item.id}
                         />
 

@@ -8,8 +8,10 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "algoliasearch": "^3.35.1",
     "native-base": "^2.13.8",
     "react": "16.8.6",
+    "react-instantsearch-native": "^6.0.0",
     "react-native": "0.60.5",
     "react-native-calendar-component": "^0.1.2",
     "react-native-document-picker": "^3.2.4",
