@@ -21,23 +21,24 @@ export default function Item({ data, navigation }) {
             <TouchableOpacity onPress={() => {
                 navigation.navigate("Chi tiết bảng", data);
             }}>
-                <View style={{ flexDirection: 'row' }}>
-                    <View style={{ flex: 9 }}>
-                        <Text style={{ fontSize: 16, fontWeight: '700' }}>{data.name}</Text>
+                <View style={{backgroundColor: "#F3C537", padding: 10}}>
+                    <View style={{ flexDirection: 'row' }}>
+                        <View style={{ flex: 9 }}>
+                            <Text style={{ fontSize: 16, fontWeight: '700' }}>{data.name}</Text>
+                        </View>
+                        <View style={{ flex: 1 }}>
+                            {data.primary && <Icon name='md-star-outline' />}
+                        </View>
                     </View>
-                    <View style={{ flex: 1 }}>
-                        {data.primary && <Icon name='md-star-outline' />}
+                    <View style={styles.itemMember}>
+                        {_render(data.members)}
                     </View>
-                </View>
-                <View style={styles.itemMember}>
-                    {_render(data.members)}
                 </View>
                 <View style={styles.actionContainer}>
                     <View style={styles.actionInfo}>
-
                     </View>
                     <View style={styles.deadline}>
-                        <Icon name='md-time' style={{ fontSize: 14 }} />
+                        <Icon name='md-time' style={{ fontSize: 14, color: '#F3C537' }} />
                         {date && <Text style={styles.showdeadline}>Ngày tạo: {date.getDate()}/{date.getMonth() + 1}/{date.getFullYear()}</Text>}
                     </View>
                 </View>
@@ -53,11 +54,13 @@ const styles = StyleSheet.create({
         padding: 10
     },
     itemContainer: {
-        padding: 10,
+        //backgroundColor: 'white',
+        //elevation: 3,
+        //padding: 10,
         borderWidth: 1,
         borderRadius: 5,
         marginTop: 10,
-        borderColor: '#8492A6'
+        borderColor: '#C4C4C4'
     },
     itemMember: {
         flexDirection: 'row',
@@ -70,12 +73,12 @@ const styles = StyleSheet.create({
         marginRight: 10,
     },
     actionContainer: {
-        marginTop: 10,
+        //marginTop: 10,
         flexDirection: 'row',
         justifyContent: 'space-between',
-        borderTopWidth: 1,
-        borderTopColor: '#8492A6',
-        paddingTop: 5
+        //borderTopWidth: 1,
+        //borderTopColor: '#8492A6',
+        padding: 10
     },
     deadline: {
         flexDirection: 'row',

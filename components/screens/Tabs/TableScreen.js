@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useReducer } from 'react';
 import {
   View,
   TouchableOpacity,
@@ -40,11 +40,13 @@ export default class TableScreen extends Component {
         board.data().members.forEach(val => {
           firebase.firestore().collection('users').doc(val).get()
             .then(user => {
+              let position = board.data().author == user.data().uid ? 'ADMIN' : 'MEMBER';
               users.push({
                 uid: user.data().uid,
                 name: user.data().name,
                 avatar: user.data().photoURL,
-                email: user.data().email
+                email: user.data().email,
+                pos: position
               });
 
               this.setState({
@@ -77,21 +79,21 @@ export default class TableScreen extends Component {
   render() {
     return (
       <Container>
-        <Header>
+        <Header androidStatusBarColor="#21272E" style={{ backgroundColor: "#21272E" }}>
           <Body>
-            <Title>Bảng</Title>
+            <Title style={{ color: "#F3C537" }}>Bảng</Title>
           </Body>
           <Right>
             <Button transparent
-              onPress={() => { this.props.navigation.navigate('Tìm kiếm', {'boards': this.state.listBoard}) }}>
-              <Icon name="search" />
+              onPress={() => { this.props.navigation.navigate('Tìm kiếm', { 'boards': this.state.listBoard }) }}>
+              <Icon style={{ color: "#F3C537" }} name="search" />
             </Button>
           </Right>
         </Header>
         <Content contentContainerStyle={{ flex: 1 }}>
           <AddBoard ref={'modalThemBang'}></AddBoard>
           <View style={styles.container}>
-            <View style={{ marginLeft: 15 }}>
+            <View >
               <Text style={{ color: '#8492A6', fontSize: 14, fontWeight: 'bold' }}>Danh sách bảng</Text>
             </View>
             <View>
@@ -105,12 +107,12 @@ export default class TableScreen extends Component {
             </View>
             <Fab
               position="bottomRight"
-              style={{ backgroundColor: '#5067FF' }}
+              style={{ backgroundColor: '#21272E' }}
               onPress={() => {
                 this.showAdd();
               }}
             >
-              <Icon name="md-add" />
+              <Icon style={{ color: "#F3C537"}} name="md-add" />
             </Fab>
           </View>
         </Content>

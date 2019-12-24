@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, FlatList } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import Modal from 'react-native-modalbox';
 import { Item, Input, Icon } from 'native-base';
 import firebase from 'react-native-firebase';
@@ -22,7 +22,9 @@ function User({ data, bid, bname }) {
                             'bname': bname
                         },
                         status: false
-                    })
+                    }).then(() => {
+                        Alert.alert('Thành công', 'Đã gửi lời mời tham gia bảng!');
+                    });
                 }}>
                 <Text style={{ color: 'blue' }}>THÊM</Text>
             </TouchableOpacity>
@@ -34,8 +36,9 @@ export default class AddBoard extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            users: [],
-            loading: true
+            users: null,
+            loading: true,
+            email: ''
         };
         this.unsubscriber = null;
         this.ref = firebase.firestore().collection('users');
@@ -46,28 +49,33 @@ export default class AddBoard extends Component {
     }
 
     componentDidMount() {
-        const users = [];
-        this.unsubscriber = this.ref.get()
-            .then(query => {
-                query.forEach(doc => {
-                    users.push({
-                        uid: doc.data().uid,
-                        name: doc.data().name,
-                        token: doc.data().token,
-                    });
-                });
 
-                this.setState({
-                    users,
-                    loading: false
-                })
-            });
     }
 
     UNSAFE_componentWillMount() {
         if (this.unsubscriber) {
             this.unsubscriber();
         }
+    }
+
+    searchUserValible = () => {
+        console.log('submit, email = ', this.state.email);
+        this.ref.where('email', '==', this.state.email).get()
+            .then(query => {
+                if (query.empty) {
+                    return;
+                }
+                query.forEach(doc => {
+                    const users = {
+                        uid: doc.data().uid,
+                        name: doc.data().name,
+                        token: doc.data().token,
+                        email: doc.data().email,
+                        photo: doc.data().photoURL
+                    };
+                    this.setState({ users });
+                });
+            });
     }
 
     render() {
@@ -92,19 +100,15 @@ export default class AddBoard extends Component {
                         <Input
                             style={{ height: 40 }}
                             placeholder='Nhập email hoặc tên...' keyboardType="email-address"
-                            onSubmitEditing={() => {
-                            }} />
+                            onChangeText={(text) => {
+                                this.setState({ email: text });
+                            }}
+                            onSubmitEditing={this.searchUserValible} />
                         <Icon name='md-search' />
                     </Item>
                 </View>
                 <View style={{ marginTop: 10 }}>
-                    <FlatList
-                        showsVerticalScrollIndicator={false}
-                        data={this.state.users}
-                        renderItem={({ item }) => <User data={item} bid={this.props.bid} bname={this.props.bname}></User>}
-                        keyExtractor={item => item.name}
-                        extraData={this.state.loading}
-                    />
+                    {this.state.users && <User data={this.state.users} bid={this.props.bid} bname={this.props.bname}></User>}
                 </View>
             </Modal>
         );

@@ -36,10 +36,10 @@ export default class MoreScreen extends Component {
     //console.log('user = ', this.state.user);
     return (
       <Container>
-        <Header noShadow>
+        <Header noShadow androidStatusBarColor="#21272E" style={{ backgroundColor: '#21272E' }}>
           <Left style={{ flex: 0 }} />
           <Body style={{ flex: 3, padding: 10 }}>
-            <Title>Cài đặt</Title>
+            <Title style={{ color: '#F3C537' }}>Cài đặt</Title>
           </Body>
           <Right style={{ flex: 0 }} />
         </Header>
@@ -47,18 +47,18 @@ export default class MoreScreen extends Component {
           {this.state.user &&
             <>
               <View style={{
-                backgroundColor: '#3F51B5', flexDirection: 'row', alignItems: 'center',
+                backgroundColor: '#21272E', flexDirection: 'row', alignItems: 'center',
                 paddingTop: 10, paddingLeft: 15, paddingRight: 15, paddingBottom: 25
               }}>
                 <View style={{ flex: 2 }}>
-                  <Thumbnail source={{ uri: this.state.user.photoURL }} style={{ marginRight: 10 }} />
+                  <Thumbnail source={{ uri: this.state.user.photoURL }} style={{ marginRight: 10, borderColor: '#F3C537', borderWidth: 1 }} />
                 </View>
                 <View style={{ flexDirection: 'column', flex: 7 }}>
                   <Text style={{ color: 'white' }}>{this.state.user.email}</Text>
                   <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 18 }}>{this.state.user.name}</Text>
                 </View>
                 <TouchableOpacity onPress={() => { this.props.navigation.navigate('Pro5', this.state.user) }}>
-                  <Icon name="pencil-square" type="FontAwesome" style={{ color: 'white', flex: 1 }} />
+                  <Icon name="pencil-square" type="FontAwesome" style={{ color: '#F3C537', flex: 1 }} />
                 </TouchableOpacity>
               </View>
             </>
@@ -69,7 +69,7 @@ export default class MoreScreen extends Component {
             </ListItem>
             <ListItem onPress={() => { this.showModalUpdatePass() }}>
               <Left>
-                  <Text>Đổi mật khẩu</Text>
+                <Text>Đổi mật khẩu</Text>
               </Left>
               <Right>
                 <Icon name="arrow-forward" />

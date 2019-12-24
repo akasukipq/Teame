@@ -12,6 +12,7 @@ import { Container, Header, Content, Body, Left, Icon, Title, Right, Subtitle, B
 import { Info, Checklist, Attach, Comment, Vote } from '../SubTabs/Card';
 import firebase from 'react-native-firebase';
 import Menu, { MenuItem, MenuDivider } from 'react-native-material-menu';
+import * as AddCalendarEvent from 'react-native-add-calendar-event';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -38,6 +39,30 @@ export default class CardViewScreen extends Component {
         this.setState({
             index
         })
+    }
+
+    addCardToCalendar(title, time, note) {
+        let eventConfig = {};
+        if (time) {
+            //convert time to UTC string
+            let colectTime = time.split('/');
+            let corTime = colectTime[2] + '-' + colectTime[1] + '-' + colectTime[0] + 'T';
+            let stime = corTime + '07:00:00.000Z';
+            let etime = corTime + '08:00:00.000Z';
+            eventConfig = {
+                title,
+                startDate: stime,
+                endDate: etime,
+                notes: note,
+            };
+        }
+        else {
+            eventConfig = {
+                title,
+                notes: note,
+            };
+        }
+        AddCalendarEvent.presentEventCreatingDialog(eventConfig);
     }
 
     _renderTab() {
@@ -69,7 +94,6 @@ export default class CardViewScreen extends Component {
     componentDidMount() {
         let id = this.props.navigation.state.params.id;
         this.unsubscriber = this.ref.doc(id).onSnapshot(doc => {
-            console.log('có doc không ', doc);
             if (doc.data()) {
                 const Card = Object.assign({}, this.state.Card, {
                     id: id,
@@ -102,15 +126,19 @@ export default class CardViewScreen extends Component {
                         <TouchableOpacity onPress={() => { this.props.navigation.goBack(null) }}>
                             <Icon name="arrow-back" style={{ color: 'white' }} />
                         </TouchableOpacity>
-                        <Menu 
+                        <Menu
                             ref={'menu'}
                             button={<TouchableOpacity style={{ paddingLeft: 10, paddingRight: 10 }}
                                 onPress={() => { this.refs.menu.show() }}>
                                 <Icon name="more" style={{ color: 'white' }} />
                             </TouchableOpacity>}
                         >
-                            <MenuItem >Bầu chọn</MenuItem>
-                            <MenuItem >Địa điểm</MenuItem>
+                            <MenuItem onPress={() => {
+
+                                this.addCardToCalendar(this.state.Card.name, this.state.Card.deadline, this.state.Card.describe);
+
+                            }}
+                            >Thêm vào lịch</MenuItem>
                             <MenuDivider />
                             <MenuItem onPress={() => {
                                 Alert.alert(

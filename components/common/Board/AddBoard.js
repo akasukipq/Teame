@@ -48,6 +48,7 @@ export default class AddBoard extends Component {
                         firebase.firestore().collection('boards').add({
                             name: this.state.name,
                             primary: false,
+                            author: firebase.auth().currentUser.uid,
                             members: [
                                 firebase.auth().currentUser.uid
                             ],

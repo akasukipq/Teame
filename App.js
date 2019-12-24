@@ -26,7 +26,7 @@ import {
 import Members from './components/screens/SubTabs/Drawer/Members';
 import Calendars from './components/screens/SubTabs/Drawer/Calendars';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
-import { createBottomTabNavigator } from 'react-navigation-tabs';
+import { createBottomTabNavigator, BottomTabBar } from 'react-navigation-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { createStackNavigator } from 'react-navigation-stack';
 import NavigationService from './components/common/NavigationService';
@@ -106,6 +106,8 @@ MoreStack.navigationOptions = ({ navigation }) => {
   };
 }
 
+const TabBarComponent = props => <BottomTabBar {...props} />;
+
 const TabNavigator = createBottomTabNavigator({
   "Trang chủ": HomeScreen,
   "Bảng": TableStack,
@@ -113,6 +115,18 @@ const TabNavigator = createBottomTabNavigator({
   "Thông báo": NotyScreen,
   "Thêm": MoreStack
 }, {
+  tabBarOptions: {
+    style:{
+      backgroundColor: "#F3C537",
+    },
+    activeBackgroundColor: '#21272E',
+    activeTintColor: "#F3C537",
+    inactiveTintColor: '#21272E',
+    inactiveBackgroundColor: "#F3C537"
+  },
+  tabBarComponent: props => (
+    <TabBarComponent {...props} style={{ borderTopColor: '#21272E' }} />
+  ),
   defaultNavigationOptions: ({ navigation }) => ({
     tabBarIcon: ({ focused, horizontal, tintColor }) => {
       const { routeName } = navigation.state;
@@ -134,8 +148,8 @@ const TabNavigator = createBottomTabNavigator({
       }
       // You can return any component that you like here!
       return <Ionicons name={iconName} size={25} color={tintColor} />;
-    }
-  })
+    },
+  }),
 })
 
 const IndexNavigator = createSwitchNavigator({

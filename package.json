@@ -13,6 +13,7 @@
     "react": "16.8.6",
     "react-instantsearch-native": "^6.0.0",
     "react-native": "0.60.5",
+    "react-native-add-calendar-event": "3.0.0",
     "react-native-calendar-component": "^0.1.2",
     "react-native-document-picker": "^3.2.4",
     "react-native-firebase": "^5.5.6",

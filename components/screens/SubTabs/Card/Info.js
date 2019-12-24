@@ -332,6 +332,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 5,
+    marginRight: 5
   },
   box: {
     flexDirection: 'row',
