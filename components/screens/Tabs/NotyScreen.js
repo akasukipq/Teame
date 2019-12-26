@@ -23,6 +23,18 @@ function Item({ data }) {
                                     <TouchableOpacity
                                         style={{ marginLeft: 20 }}
                                         onPress={() => {
+                                            //
+
+                                            firebase.firestore().collection('boards').doc(data.payload.bid).get()
+                                            .then(doc => {
+                                                const oldMembers = [
+                                                    ...doc.data().members,
+                                                    firebase.auth().currentUser.uid
+                                                ];
+                                                firebase.firestore().collection('boards').doc(data.payload.bid).update({
+                                                    members: oldMembers
+                                                })
+                                            });
                                             firebase.firestore().collection('requests').doc(data.id).update({
                                                 status: true
                                             });
@@ -82,7 +94,7 @@ function Item({ data }) {
                                                     NavigationService.navigate('Chi tiết card', { id: item.id, name: namee, members: users });
                                                 });
                                         });
-                                        
+
                                 }}>
                                 <Text style={{ color: '#F3C537' }}>XEM THẺ</Text>
                             </TouchableOpacity>
