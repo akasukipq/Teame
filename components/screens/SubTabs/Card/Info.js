@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Button, TextInput, Alert, TouchableOpacity, ScrollView, Text, Linking } from 'react-native';
+import { View, StyleSheet, Button, TextInput, Alert, TouchableOpacity, ScrollView, Linking } from 'react-native';
 import firebase from 'react-native-firebase';
-import { Icon, DatePicker, Fab, Thumbnail } from 'native-base';
+import { Icon, DatePicker, Fab, Thumbnail, Text } from 'native-base';
 import { withNavigation } from 'react-navigation';
 import AddLabel from '../../../common/Card/AddLabel';
 import AddMember from '../../../common/Card/AddMember';
@@ -24,7 +24,7 @@ class Info extends Component {
       membersUid: this.props.data.members, //member uid của card
       members: this.props.bmembers, //member trong bảng
       membersCard: [],
-      address:this.props.data.address
+      address: this.props.data.address
     };
   }
 
@@ -84,7 +84,7 @@ class Info extends Component {
   render() {
     let deadline = this.state.deadline ? this.fetchDeadline(this.state.deadline) : null;
     return (
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1, padding: 10 }}>
         <ScrollView>
 
           {this.state.editMode &&
@@ -215,9 +215,17 @@ class Info extends Component {
             paddingLeft: 5,
             paddingRight: 5
           }]}>
-            <View style={styles.title}>
-              <Icon type='FontAwesome' name='map-marker' style={[styles.article, { fontSize: 14, }]}></Icon>
-              <Text style={[{ marginLeft: 5 }, styles.article]}>Địa điểm</Text>
+            <View style={[styles.title, { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }]}>
+              <View style={{ flexDirection: 'row', alignItems: 'center'}}>
+                <Icon type='FontAwesome' name='map-marker' style={[styles.article, { fontSize: 14, }]}></Icon>
+                <Text style={[{ marginLeft: 5}, styles.article]}>Địa điểm</Text>
+              </View>
+              <TouchableOpacity
+                onPress={() => {
+                  Linking.openURL(`geo:0,0?q=${this.state.address}`);
+                }}>
+                <Text style={{ color :'#F3C537'}}>Mở map</Text>
+              </TouchableOpacity>
             </View>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               <View style={{ flex: 8 }}>
@@ -230,14 +238,6 @@ class Info extends Component {
                   }} /> :
                   <Text style={styles.content}>{this.state.address}</Text>}
               </View>
-
-              <TouchableOpacity
-                style={{ flex: 2 }}
-                onPress={() => {
-                  Linking.openURL(`geo:0,0?q=${this.state.address}`);
-                }}>
-                <Text>Mở map</Text>
-              </TouchableOpacity>
             </View>
             <View style={styles.border}>
             </View>
@@ -265,7 +265,7 @@ class Info extends Component {
         <AddMember ref={'modalMember'} members={this.state.members} update={this.updateMember} ></AddMember>
         <Fab
           position="bottomRight"
-          style={{ backgroundColor: '#5067FF', width: 50, height: 50 }}
+          style={{ backgroundColor: '#21272E', width: 50, height: 50 }}
           onPress={() => {
             if (this.state.editMode == true) { //Đang ở edit mode -> ấn đóng lại
 
@@ -292,7 +292,7 @@ class Info extends Component {
             });
           }}
         >
-          <Icon name={this.state.editMode ? "md-close" : "md-construct"} />
+          <Icon name={this.state.editMode ? "md-close" : "md-create"} style={{color: '#F3C537'}} />
         </Fab>
       </View>
     );

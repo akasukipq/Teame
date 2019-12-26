@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, TouchableOpacity, Alert, Dimensions } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Alert, Dimensions, AsyncStorage } from 'react-native';
 import { Container, Header, Content, Footer, Title, Button, Segment, Body, Text, Right, Left, Icon, Tab, Tabs, Thumbnail } from 'native-base';
 //import { General } from '../SubTabs/General';
 //import MenuHome from '../../common/MenuHome'
@@ -66,7 +66,7 @@ export default class HomeScreen extends Component {
     return (
       <Container>
         <Header androidStatusBarColor="#21272E" style={{ backgroundColor: "#21272E" }}>
-          <Body>
+          <Body style={{ padding: 10 }}>
             <Title style={{ color: "#F3C537" }}>Tổng quan</Title>
           </Body>
         </Header>
@@ -95,7 +95,7 @@ export default class HomeScreen extends Component {
           <View style={{ marginTop: 10, padding: 10 }}>
             <Text style={{ color: 'white' }}>Thẻ công việc của bạn</Text>
           </View>
-          <View>
+          <View style={{ flex: 1 }}>
             <Carousel
               swipeThreshold={0}
               layout={'default'}
@@ -104,7 +104,7 @@ export default class HomeScreen extends Component {
               renderItem={({ item }) => {
                 return (
                   <View style={styles.itemContainer}>
-                    <TouchableOpacity style={{ flex: 1, borderRadius: 20, borderWidth: 1, borderColor: "#21272E", overflow: 'hidden' }}
+                    <TouchableOpacity style={{ borderRadius: 20, borderWidth: 1, borderColor: "#21272E", overflow: 'hidden' }}
                       onPress={() => {
                         const users = [];
 
@@ -135,12 +135,10 @@ export default class HomeScreen extends Component {
                               });
                           });
                       }}>
-                      <View style={{ backgroundColor: "#F3C537", padding: 10, flex: 7 }}>
+                      <View style={{ backgroundColor: "#F3C537", padding: 10}}>
                         <View style={{ flexDirection: 'row', marginTop: 10 }}>
-                          <View style={{ flex: 9 }}>
+                          <View>
                             <Text style={{ fontSize: 16, fontWeight: '700' }}>{item.name}</Text>
-                          </View>
-                          <View style={{ flex: 1 }}>
                           </View>
                         </View>
                         <View style={styles.itemMember}>
@@ -161,7 +159,7 @@ export default class HomeScreen extends Component {
                 )
               }}
               sliderWidth={Dimensions.get("window").width}
-              itemWidth={Dimensions.get("window").width - 80}
+              itemWidth={Dimensions.get("window").width - 100}
               lockScrollWhileSnapping={true}
             />
           </View>
@@ -186,7 +184,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     borderColor: '#21272E',
     backgroundColor: 'white',
-    height: 350
+    //height: 350
   },
   itemMember: {
     flexDirection: 'row',
@@ -201,7 +199,6 @@ const styles = StyleSheet.create({
   },
   actionContainer: {
     //marginTop: 10,
-    flex: 3,
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',

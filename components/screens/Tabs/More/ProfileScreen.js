@@ -54,14 +54,17 @@ export default class ProfileScreen extends Component {
         let user = this.props.navigation.state.params;
         return (
             <Container>
-                <Header noShadow>
-                    <Left>
-                        <Button transparent>
-                            <Icon name="arrow-back" color="white" />
+                <Header noShadow androidStatusBarColor="#21272E" style={{ backgroundColor: "#21272E" }}>
+                    <Left >
+                        <Button transparent
+                        onPress={() => {
+                            this.props.navigation.goBack();
+                        }}>
+                            <Icon name="arrow-back" style={{ color: "#F3C537" }} />
                         </Button>
                     </Left>
                     <Body >
-                        <Title>Sửa thông tin</Title>
+                        <Title style={{ color: "#F3C537" }}>Sửa thông tin</Title>
                     </Body>
                     <Right>
                         <Button transparent
@@ -95,13 +98,14 @@ export default class ProfileScreen extends Component {
                                     
                                 });
                             }}>
-                            <Title>LƯU</Title>
+                            <Title style={{ color: "#F3C537" }}>LƯU</Title>
                         </Button>
                     </Right>
                 </Header>
                 <View>
-                    <View style={{ backgroundColor: '#3F51B5', justifyContent: 'center', alignItems: 'center', padding: 10 }}>
+                    <View style={{ backgroundColor:"#21272E", justifyContent: 'center', alignItems: 'center', padding: 10 }}>
                         <TouchableOpacity
+                        
                             onPress={() => { this.imagePicker() }}>
                             <Thumbnail large style={styles.pro5} large source={{ uri: this.state.photoURL ? this.state.photoURL : user.photoURL }} />
                         </TouchableOpacity>

@@ -5,11 +5,11 @@ import { Icon, Thumbnail, Footer } from 'native-base';
 
 function Item({ data }) {
     return (
-        <View style={{ flexDirection: 'row', marginTop: 10 }}>
+        <View style={{ flexDirection: 'row', marginTop: 10, }}>
             <View style={{ flex: 1, }}>
                 <Thumbnail small source={{ uri: data.avatar }} />
             </View>
-            <View style={{ flex: 9, flexDirection: 'column', marginLeft: 10, backgroundColor: '#C0CCDA', borderRadius: 10, padding: 5 }}>
+            <View style={{ flex: 9, flexDirection: 'column', marginLeft: 10, backgroundColor: '#F3C537', borderRadius: 10, padding: 5 }}>
                 <Text style={{ fontWeight: 'bold' }}>{data.uname}</Text>
                 <View style={{ marginTop: 5 }}>
                     <Text>{data.contents}</Text>
@@ -75,16 +75,17 @@ export default class Comment extends Component {
                     //extraData={this.state.active}
                     />
                 </View>
-                <Footer>
+                <Footer style={{elevation: 0, marginBottom: 0}}>
                     <View style={styles.addComment}>
-                        <TextInput placeholder='Nhập bình luận...' style={{ borderWidth: 1, borderRadius: 30, flex: 9, height: 40 }}
+                        <TextInput placeholder='Nhập bình luận...' style={{ borderWidth: 1, borderRadius: 30, flex: 9, height: 40, borderColor:"#F3C537" }}
                             value={this.state.contents}
                             onChangeText={(text) => {
                                 this.setState({
                                     contents: text
                                 });
                             }} />
-                        <TouchableOpacity style={{ flex: 1, alignItems: 'flex-end' }}
+                        <TouchableOpacity
+                        style={{flex: 1, flexDirection: 'row-reverse'}}
                             onPress={() => {
                                 this.ref.collection('comments').add({
                                     uname: firebase.auth().currentUser.displayName,
@@ -108,15 +109,17 @@ export default class Comment extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        padding: 10
     },
     showComment: {
         flex: 9,
     },
     addComment: {
         flex: 1,
+        //justifyContent: 'space-between',
         flexDirection: 'row',
         alignItems: 'center',
         backgroundColor: 'white',
-        padding: 5
+        //padding: 5
     }
 });

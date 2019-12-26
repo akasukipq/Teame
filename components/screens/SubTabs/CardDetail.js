@@ -101,7 +101,7 @@ export default class CardDetail extends Component {
                             this.props.setDrag(true);
                         }}
                         onPress={() => {
-                            this.props.navigation.navigate("Chi tiết card", { id: item.id, name: this.props.ListName, members: this.props.members });
+                            this.props.navigation.navigate("Chi tiết card", { id: item.id, name: this.props.ListName, members: this.props.members, isAdmin: this.props.isAdmin });
                         }}>
 
                         {item.label && <Text style={{ color: item.label.color }}>{item.label.name}</Text>}
@@ -164,7 +164,9 @@ const styles = StyleSheet.create({
     container: {
         padding: 10,
         borderWidth: 1,
-        marginTop: 10
+        marginTop: 10,
+        borderColor: '#C4C4C4',
+        backgroundColor: '#FFF'
     },
     tag: {
         width: 60,

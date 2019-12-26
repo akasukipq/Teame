@@ -17,7 +17,7 @@ export default class LoginScreen extends Component {
 
     render() {
         return (
-            <View style={styles.container}>
+            <View style={styles.container} >
                 <View style={styles.headerContainer}>
                     <Image source={require('../../../public/images/logo.png')} style={styles.logo}></Image>
                     <Text style={styles.title}>Đăng nhập</Text>
@@ -33,7 +33,7 @@ export default class LoginScreen extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#184576",
+        backgroundColor: "#21272E",
     },
     headerContainer: {
         flex: 4,

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput, StyleSheet, Button, FlatList, TouchableOpacity, ScrollView } from 'react-native';
-import { Icon } from 'native-base';
+import { View, TextInput, StyleSheet, Button, FlatList, TouchableOpacity, ScrollView } from 'react-native';
+import { Icon, Text } from 'native-base';
 import firebase from 'react-native-firebase';
 //import '@react-native-firebase/firestore';
 
@@ -19,8 +19,8 @@ function Item({ data, fb }) {
       })
     }}>
       <View style={styles.item}>
-        <Icon name={data.isDone ? "ios-checkmark-circle" : "ios-checkmark-circle-outline"}
-          style={data.isDone ? { marginRight: 5, color: 'green' } : { marginRight: 5, color: "#e8e4e3" }}></Icon>
+        <Icon name={data.isDone ? "md-checkbox" : "md-square-outline"}
+          style={data.isDone ? { marginRight: 5, color: '#F3C537' } : { marginRight: 5, color: "#F3C537" }}></Icon>
         <Text>{data.name}</Text>
       </View>
     </TouchableOpacity>
@@ -68,25 +68,27 @@ export default class Checklist extends Component {
 
   render() {
     return (
-      <ScrollView>
+      <ScrollView style={{ padding: 10 }}>
         <View style={styles.section}>
           <View style={styles.title}>
             <Icon type='FontAwesome5' name='calendar-check' style={[styles.article, { fontSize: 14, }]}></Icon>
             <Text style={[{ marginLeft: 5 }, styles.article]}>Danh sách công việc</Text>
           </View>
           <View style={styles.itemadd}>
-            <TextInput placeholder="Thêm công việc mới..." style={{ borderBottomWidth: 1, flex: 8 }}
+            <TextInput placeholder="Thêm công việc mới..."
               onChangeText={(text) => {
                 this.setState({
                   newck: text
                 })
               }} />
-            <Button title="Thêm" style={{ flex: 2 }} onPress={() => {
-              this.ref.collection('checklist').add({
-                name: this.state.newck,
-                isDone: false
-              })
-            }} />
+            <TouchableOpacity
+              onPress={() => {
+                this.ref.collection('checklist').add({
+                  name: this.state.newck,
+                  isDone: false
+                })
+              }}><Text style={{ color: '#F3C537' }}>THÊM</Text>
+            </TouchableOpacity>
           </View>
           <FlatList
             data={this.state.checkList}
@@ -116,14 +118,12 @@ const styles = StyleSheet.create({
   },
   item: {
     flexDirection: 'row',
-    marginTop: 10,
+    //marginTop: 10,
     alignItems: 'center',
-    borderWidth: 1,
-    borderRadius: 10,
-    borderColor: "#e8e4e3",
     padding: 10
   },
   itemadd: {
+    justifyContent: 'space-between',
     flexDirection: 'row',
     //marginTop: 10, 
     alignItems: 'center',

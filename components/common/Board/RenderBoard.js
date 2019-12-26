@@ -21,13 +21,10 @@ export default function Item({ data, navigation }) {
             <TouchableOpacity onPress={() => {
                 navigation.navigate("Chi tiết bảng", data);
             }}>
-                <View style={{backgroundColor: "#F3C537", padding: 10}}>
+                <View style={{ backgroundColor: "#F3C537", padding: 10 }}>
                     <View style={{ flexDirection: 'row' }}>
-                        <View style={{ flex: 9 }}>
+                        <View>
                             <Text style={{ fontSize: 16, fontWeight: '700' }}>{data.name}</Text>
-                        </View>
-                        <View style={{ flex: 1 }}>
-                            {data.primary && <Icon name='md-star-outline' />}
                         </View>
                     </View>
                     <View style={styles.itemMember}>
@@ -36,9 +33,10 @@ export default function Item({ data, navigation }) {
                 </View>
                 <View style={styles.actionContainer}>
                     <View style={styles.actionInfo}>
+                        {data.primary && <Icon name='md-star-outline' />}
                     </View>
                     <View style={styles.deadline}>
-                        <Icon name='md-time' style={{ fontSize: 14, color: '#F3C537' }} />
+                        <Icon name='md-time' style={{color: '#F3C537' }} />
                         {date && <Text style={styles.showdeadline}>Ngày tạo: {date.getDate()}/{date.getMonth() + 1}/{date.getFullYear()}</Text>}
                     </View>
                 </View>
@@ -78,6 +76,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         //borderTopWidth: 1,
         //borderTopColor: '#8492A6',
+        backgroundColor: 'white',
         padding: 10
     },
     deadline: {

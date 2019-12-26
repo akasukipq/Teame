@@ -3,10 +3,10 @@ import {
     View,
     StyleSheet,
     ScrollView,
-    Text,
     TouchableOpacity,
     Dimensions,
-    Alert
+    Alert,
+    Text
 } from 'react-native';
 import { Container, Header, Content, Body, Left, Icon, Title, Right, Subtitle, Button } from 'native-base';
 import { Info, Checklist, Attach, Comment, Vote } from '../SubTabs/Card';
@@ -26,7 +26,7 @@ export default class CardViewScreen extends Component {
                 lid: '',
                 describe: '',
                 label: null,
-                deadline: '',
+                deadline: null,
             },
             Loading: false,
             index: 0,
@@ -121,16 +121,16 @@ export default class CardViewScreen extends Component {
     render() {
         return (
             <View style={{ flex: 1 }}>
-                <View style={styles.header}>
+                <View style={[styles.header, { backgroundColor: '#21272E' }]}>
                     <View style={[styles.section, { paddingTop: 10 }]}>
                         <TouchableOpacity onPress={() => { this.props.navigation.goBack(null) }}>
-                            <Icon name="arrow-back" style={{ color: 'white' }} />
+                            <Icon name="arrow-back" style={{ color: '#F3C537' }} />
                         </TouchableOpacity>
                         <Menu
                             ref={'menu'}
                             button={<TouchableOpacity style={{ paddingLeft: 10, paddingRight: 10 }}
                                 onPress={() => { this.refs.menu.show() }}>
-                                <Icon name="more" style={{ color: 'white' }} />
+                                <Icon name="more" style={{ color: '#F3C537' }} />
                             </TouchableOpacity>}
                         >
                             <MenuItem onPress={() => {
@@ -139,6 +139,7 @@ export default class CardViewScreen extends Component {
 
                             }}
                             >Thêm vào lịch</MenuItem>
+                            {this.props.navigation.state.params.isAdmin && <>
                             <MenuDivider />
                             <MenuItem onPress={() => {
                                 Alert.alert(
@@ -160,21 +161,23 @@ export default class CardViewScreen extends Component {
                                     { cancelable: false },
                                 );
                             }}>Xóa</MenuItem>
+                            </>}
                         </Menu>
 
                     </View>
                     <View style={styles.section}>
                         <View style={styles.wrapper}>
-                            <Text style={styles.title}>{this.state.Card.name}</Text>
+                            <Title style={styles.title}>{this.state.Card.name}</Title>
                         </View>
                     </View>
-                    <View style={[styles.section, { paddingTop: 10 }]}>
-                        <View>
+                    <View style={[styles.section, { paddingTop: 10, marginBottom: 30, alignItems: 'center' }]}>
+                        <View style={{ backgroundColor: '#FFF', paddingTop: 4, paddingBottom: 4, paddingLeft: 10, paddingRight: 10, borderWidth: 2, borderRadius: 30, borderColor: '#F3C537', }}>
                             <Text style={styles.subtitle}>{this.props.navigation.state.params.name}</Text>
                         </View>
+                        {this.state.Card.deadline != null && 
                         <View>
-                            <Text style={styles.subtitle}>Due: {this.state.Card.deadline}</Text>
-                        </View>
+                            <Text style={{ color: '#FFF' }}>Hết hạn: {this.state.Card.deadline}</Text>
+                        </View>}
                     </View>
                 </View>
 
@@ -205,7 +208,7 @@ export default class CardViewScreen extends Component {
                         </View>
                     </TouchableOpacity>
                 </View>
-
+                <View style={{ marginTop: 30 }} />
                 {this.state.Loading && this._renderTab()}
             </View>
         );
@@ -223,11 +226,14 @@ const styles = StyleSheet.create({
         flexDirection: 'column'
     },
     menu: {
+        position: 'absolute',
+        top: 125,
         padding: 10,
-        backgroundColor: '#d4d6d5',
         flexDirection: 'row',
+        width: Dimensions.get('window').width - 40,
         justifyContent: 'space-around',
         alignItems: 'center',
+        alignSelf: 'center'
     },
     content: {
         flex: 1,
@@ -250,25 +256,27 @@ const styles = StyleSheet.create({
         fontWeight: 'bold'
     },
     subtitle: {
-        color: 'white'
+        color: 'black'
     },
     wrapper: {
-        paddingLeft: 20,
+        paddingLeft: 10,
     },
     icon: {
         width: 50,
         height: 50,
         borderRadius: 180,
+        borderWidth: 2,
+        borderColor: '#F3C537',
         justifyContent: 'center',
         alignItems: 'center'
     },
     activeBg: {
-        backgroundColor: '#00A6FF'
+        backgroundColor: '#F3C537'
     },
     activeic: {
-        color: 'white'
+        color: "#21272E"
     },
     ic: {
-        color: '#00A6FF'
+        color: "#21272E"
     }
 })

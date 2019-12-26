@@ -84,7 +84,7 @@ export default class LoginForm extends Component {
                                         this.props.nav.navigate("App", { userInfor: this.state.user });
                                     })
                                     .catch((error) => {
-                                        console.log(error);
+                                        //console.error(error);
                                         var info = error.code;
                                         if (info === 'auth/user-not-found') {
                                             Alert.alert("Lỗi", "Tài khoản không tồn tại!");

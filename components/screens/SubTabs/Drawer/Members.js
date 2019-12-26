@@ -77,23 +77,23 @@ export default class Members extends Component {
     let bname = this.props.navigation.state.params.name;
     return (
       <Container>
-        <Header>
+        <Header androidStatusBarColor="#21272E" style={{ backgroundColor: "#21272E" }}>
           <Left>
             <Button transparent
               onPress={() => {
                 this.props.navigation.goBack();
               }}>
-              <Icon name="arrow-round-back" style={{ color: "#fff" }} />
+              <Icon name="arrow-round-back" style={{ color: "#F3C537" }} />
             </Button>
           </Left>
           <Body>
-            <Title>Thành viên</Title>
+            <Title style={{ color: "#F3C537" }}>Thành viên</Title>
           </Body>
           <Right>
             <Button transparent onPress={() => {
               this.showModal();
             }}>
-              <Icon name="md-add" />
+              <Icon name="md-add" style={{ color: "#F3C537" }} />
             </Button>
           </Right>
         </Header>

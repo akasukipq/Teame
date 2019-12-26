@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { TextInput, Modal, Button, View, Text, SafeAreaView, FlatList, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
-import { Icon } from 'native-base';
+import { Icon, Fab } from 'native-base';
 import { withNavigation } from 'react-navigation';
 import { insertTodoList, updateTodoList, deleteTodoList, getAllTodoList } from "../../../database/schema";
 import realm from '../../../database/schema';
@@ -59,6 +59,11 @@ class Todo extends Component {
         })
     }
 
+    
+  showAdd() {
+    this.refs.popupInsert.show();
+  };
+
     render() {
         return (
             <SafeAreaView style={styles.container}>
@@ -76,6 +81,15 @@ class Todo extends Component {
                     keyExtractor={item => item.id}
                 />
                 <AddTodo ref="popupInsert" func={insertTodoList} />
+                <Fab
+                    position="bottomRight"
+                    style={{ backgroundColor: '#21272E' }}
+                    onPress={() => {
+                        this.showAdd();
+                    }}
+                >
+                    <Icon style={{ color: "#F3C537" }} name="md-add" />
+                </Fab>
             </SafeAreaView>
         );
     }
@@ -85,6 +99,7 @@ export default withNavigation(Todo);
 
 const styles = StyleSheet.create({
     container: {
+        flex: 1
     },
     item: {
         flexBasis: "50%",
@@ -94,10 +109,12 @@ const styles = StyleSheet.create({
         padding: 30,
         margin: 10,
         borderRadius: 15,
+        borderWidth: 2,
+        borderColor: '#F3C537',
         elevation: 2,
     },
     text: {
-        color: "#184576",
+        color: "#F3C537",
         fontSize: 20,
         fontWeight: "bold"
     }

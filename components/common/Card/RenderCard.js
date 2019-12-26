@@ -20,8 +20,10 @@ export default function RenderCard({ item, navigation }) {
         <TouchableOpacity
             style={{
                 padding: 10,
+                marginTop: 10,
+                backgroundColor: 'white',
                 borderWidth: 1,
-                marginTop: 10
+                borderColor: '#C4C4C4'
             }}
             onPress={() => {
                 navigation.navigate("Chi tiết card", { id: item.id, name: item.lname, members: item.bmembers });

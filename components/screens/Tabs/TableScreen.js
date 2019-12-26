@@ -4,9 +4,8 @@ import {
   TouchableOpacity,
   FlatList,
   StyleSheet,
-  Text
 } from 'react-native';
-import { Container, Header, Content, Button, Title, Body, Right, Left, Icon, Fab, Thumbnail } from 'native-base';
+import { Container, Header, Content, Button, Title, Body, Right, Left, Icon, Fab, Text } from 'native-base';
 import AddBoard from '../../common/Board/AddBoard';
 import firebase from 'react-native-firebase';
 import RenderBoard from '../../common/Board/RenderBoard';
@@ -60,6 +59,7 @@ export default class TableScreen extends Component {
           name: board.data().name,
           primary: board.data().primary,
           timestamp: board.data().timestamp,
+          author: board.data().author,
           members: users
         })
       });
@@ -80,7 +80,7 @@ export default class TableScreen extends Component {
     return (
       <Container>
         <Header androidStatusBarColor="#21272E" style={{ backgroundColor: "#21272E" }}>
-          <Body>
+          <Body style={{ padding: 10 }}>
             <Title style={{ color: "#F3C537" }}>Bảng</Title>
           </Body>
           <Right>
@@ -94,7 +94,7 @@ export default class TableScreen extends Component {
           <AddBoard ref={'modalThemBang'}></AddBoard>
           <View style={styles.container}>
             <View >
-              <Text style={{ color: '#8492A6', fontSize: 14, fontWeight: 'bold' }}>Danh sách bảng</Text>
+              <Text style={{ color: '#8492A6', fontWeight: 'bold' }}>Danh sách bảng</Text>
             </View>
             <View>
               <FlatList
@@ -105,17 +105,17 @@ export default class TableScreen extends Component {
                 extraData={this.state.active}
               />
             </View>
-            <Fab
-              position="bottomRight"
-              style={{ backgroundColor: '#21272E' }}
-              onPress={() => {
-                this.showAdd();
-              }}
-            >
-              <Icon style={{ color: "#F3C537"}} name="md-add" />
-            </Fab>
           </View>
         </Content>
+        <Fab
+          position="bottomRight"
+          style={{ backgroundColor: '#21272E' }}
+          onPress={() => {
+            this.showAdd();
+          }}
+        >
+          <Icon style={{ color: "#F3C537" }} name="md-add" />
+        </Fab>
       </Container>
     );
   }

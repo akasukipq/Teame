@@ -94,7 +94,7 @@ export default class Attach extends Component {
                 else {
                     listDocument.push({
                         name: docdata.name,
-                        size:  docdata.size,
+                        size: docdata.size,
                         url: docdata.url
                     });
                 }
@@ -133,7 +133,7 @@ export default class Attach extends Component {
                     <Text style={{
                         fontSize: 16
                     }}>{item.name}</Text>
-                    <Text style={styles.article}>Dung lượng: { Math.floor(item.size / 1024)}KB</Text>
+                    <Text style={styles.article}>Dung lượng: {Math.floor(item.size / 1024)}KB</Text>
                 </View>
 
                 <View style={{
@@ -185,21 +185,21 @@ export default class Attach extends Component {
                     active={this.state.activeFab}
                     direction="up"
                     position="bottomRight"
-                    style={{ backgroundColor: '#5067FF' }}
+                    style={{ backgroundColor: '#21272E' }}
                     onPress={() => {
                         this.setState({
                             activeFab: !this.state.activeFab
                         })
                     }}
                 >
-                    <Icon name="md-add" />
+                    <Icon name="md-add" style={{ color: '#F3C537' }} />
 
-                    <Button onPress={() => this.imagePicker()}>
-                        <Icon name='md-images' />
+                    <Button onPress={() => this.imagePicker()} style={{ backgroundColor: '#21272E' }}>
+                        <Icon name='md-images' style={{ color: '#F3C537' }} />
                     </Button>
 
-                    <Button onPress={() => this.filePicker()}>
-                        <Icon name='md-document' />
+                    <Button onPress={() => this.filePicker()} style={{ backgroundColor: '#21272E' }}>
+                        <Icon name='md-document' style={{ color: '#F3C537' }} />
                     </Button>
 
                 </Fab>

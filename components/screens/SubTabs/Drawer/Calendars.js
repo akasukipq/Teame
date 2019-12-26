@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
-import { Container, Header, Content, Button, Title, Body, Right, Left, Icon, Thumbnail } from 'native-base';
+import { View, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
+import { Container, Header, Content, Button, Title, Body, Right, Left, Icon, Thumbnail, Text } from 'native-base';
 import _renderCard from '../../../common/Card/RenderCard';
 import RenderCard from '../../../common/Card/RenderCard';
 
@@ -218,21 +218,29 @@ export default class Calendars extends Component {
             </View>);
     }
 
+    renderMember = (card) => {
+        if (!card.members)
+            return false;
+        return (card.bmembers.map(val => (
+            card.members.includes(val.uid) && <Thumbnail key={val.uid} style={styles.avatar} source={{ uri: val.avatar }}></Thumbnail>
+        )));
+    }
+
     render() {
 
         return (
             <Container>
-                <Header>
+                <Header androidStatusBarColor="#21272E" style={{ backgroundColor: "#21272E" }}>
                     <Left>
                         <Button transparent
                             onPress={() => {
                                 this.props.navigation.goBack();
                             }}>
-                            <Icon name="arrow-round-back" style={{ color: "#fff" }} />
+                            <Icon name="arrow-round-back" style={{ color: "#F3C537" }} />
                         </Button>
                     </Left>
                     <Body>
-                        <Title>Lịch</Title>
+                        <Title style={{ color: '#F3C537' }}>Lịch</Title>
                     </Body>
                     <Right />
                 </Header>
@@ -253,7 +261,27 @@ export default class Calendars extends Component {
                         <FlatList
                             scrollEnabled={true}
                             data={this.state.dataCard}
-                            renderItem={({ item }) => <RenderCard item={item} navigation={this.props.navigation} />}
+                            renderItem={({ item }) =>
+                                <TouchableOpacity
+                                    style={{
+                                        padding: 10,
+                                        marginTop: 10,
+                                        backgroundColor: '#F3C537',
+                                        borderWidth: 1,
+                                        borderRadius: 10,
+                                        borderColor: '#F3C537'
+                                    }}
+                                    onPress={() => {
+                                        this.props.navigation.navigate("Chi tiết card", { id: item.id, name: item.lname, members: item.bmembers });
+                                    }}>
+                                    <View style={{flexDirection: 'row-reverse'}}>
+                                        <View style={{ width: 10, height: 10, backgroundColor: "#21272E", borderWidth: 1, borderColor: '#21272E', borderRadius: 90 }} />
+                                    </View>
+
+                                    <View style={styles.section}>
+                                        <Text style={{ color: '#21272E' }}>{item.name}</Text>
+                                    </View>
+                                </TouchableOpacity>}
                             keyExtractor={item => item.id}
                         />
 
@@ -300,7 +328,7 @@ const styles = StyleSheet.create({
         height: 20,
     },
     section: {
-        marginTop: 5,
+        //marginTop: 5,
         flexDirection: 'row',
         alignItems: 'center'
     },

@@ -24,6 +24,14 @@ function Item({ data }) {
                         }}>
                         <Text>Tham gia</Text>
                     </TouchableOpacity>}
+                    {data.type == 'add' && <TouchableOpacity
+                        onPress={() => {
+                            firebase.firestore().collection('boards').doc(data.payload.bid).update({
+                                members: firebase.firestore.FieldValue.arrayUnion(firebase.auth().currentUser.uid)
+                            })
+                        }}>
+                        <Text>Tham gia</Text>
+                    </TouchableOpacity>}
                 </View>
             </View>
         </View>
@@ -42,10 +50,9 @@ export default class NotyView extends Component {
     }
 
     componentDidMount() {
-        this.unsubscriber = this.ref.where('to','==',firebase.auth().currentUser.uid).
+        this.unsubscriber = this.ref.
             onSnapshot(query => {
                 const notis = [];
-                console.log('update = ', query);
                 query.forEach(doc => {
                     notis.push({
                         from: doc.data().from,
@@ -53,7 +60,7 @@ export default class NotyView extends Component {
                         type: doc.data().type
                     })
                 });
-
+                console.log('notis c = ', query);
                 this.setState({
                     notis,
                     update: !this.state.update
@@ -67,8 +74,9 @@ export default class NotyView extends Component {
     }
 
     render() {
-        console.log('noti = ', this.state.notis);
+        console.log('notis = ', this.state.notis);
         return (
+
             <View>
                 <FlatList
                     showsVerticalScrollIndicator={false}

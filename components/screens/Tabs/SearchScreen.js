@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { Text, StyleSheet, FlatList } from 'react-native';
-import { Container, Header, Item, Input, Icon, Button, Content, View } from 'native-base';
+import { StyleSheet, FlatList, View } from 'react-native';
+import { Container, Header, Item, Input, Icon, Button, Content, Text } from 'native-base';
 import RenderBoard from '../../common/Board/RenderBoard';
 import RenderCard from '../../common/Card/RenderCard';
 import firebase from 'react-native-firebase';
+import { ScrollView } from 'react-native-gesture-handler';
 export default class SearchScreen extends Component {
     constructor(props) {
         super(props);
@@ -86,14 +87,13 @@ export default class SearchScreen extends Component {
     }
 
     render() {
-        console.log('ret =', )
         return (
             <Container>
-                <Header searchBar rounded>
+                <Header searchBar rounded androidStatusBarColor="#21272E" style={{ backgroundColor: "#21272E" }}>
                     <Item>
                         <Button transparent
                             onPress={() => { this.props.navigation.goBack() }}>
-                            <Icon name="ios-arrow-round-back" />
+                            <Icon name="ios-arrow-round-back" style={{ color: '#F3C537' }} />
                         </Button>
                         <Input
                             onChangeText={this.onSearching}
@@ -105,43 +105,43 @@ export default class SearchScreen extends Component {
                             autoCorrect={false}
                             autoCapitalize={'none'}
                         />
-                        <Icon name="ios-search" />
+                        <Icon name="ios-search" style={{ color: '#F3C537' }} />
                     </Item>
                 </Header>
-                <View style={{
-                    flex: 1,
-                    margin: 10,
-                    padding: 10
-                }}>
-                    {
-                        this.state.arrBRets.length <= 0 && this.state.arrCRets.length <= 0 && this.state.textSearch != ''  ?
-                            <Text>Không có kết quả</Text>
-                            :
-                            this.state.textSearch == '' ?
-                            null
-                            :
-                            <>
-                                <View>
-                                    {this.state.arrBRets.length > 0 && <Text>Bảng</Text>}
-                                    <FlatList
-                                        data={this.state.arrBRets}
-                                        renderItem={({ item }) => <RenderBoard data={item} navigation={this.props.navigation}></RenderBoard>}
-                                        keyExtractor={item => item.id}
-                                    />
+                <ScrollView style={{ backgroundColor: "#e6e6e6" }}>
+                    <View style={{ padding: 10 }}>
+                        {
+                            this.state.arrBRets.length <= 0 && this.state.arrCRets.length <= 0 && this.state.textSearch != '' ?
+                                <View style={{ alignItems: 'center', justifyContent: 'center', alignContent: 'center' }}>
+                                    <Text style={{padding: 10}}>Không có kết quả</Text>
+                                    <Text>Vui lòng đảm bảo thiết bị kết nối mạng để cập nhật dữ liệu mới nhất</Text>
                                 </View>
-                                <View>
-                                    {this.state.arrCRets.length > 0 && <Text>Thẻ</Text>}
-                                    <FlatList
-                                        //scrollEnabled={true}
-                                        data={this.state.arrCRets}
-                                        renderItem={({ item }) => <RenderCard item={item} navigation={this.props.navigation} />}
-                                        keyExtractor={item => item.id}
-                                    />
-                                </View>
-                            </>
-                    }
-
-                </View>
+                                :
+                                this.state.textSearch == '' ?
+                                    null
+                                    :
+                                    <>
+                                        <View style={{ marginTop: 10 }}>
+                                            {this.state.arrBRets.length > 0 && <Text style={{ color: '#8492A6', fontWeight: 'bold' }}> Bảng</Text>}
+                                            <FlatList
+                                                data={this.state.arrBRets}
+                                                renderItem={({ item }) => <RenderBoard data={item} navigation={this.props.navigation}></RenderBoard>}
+                                                keyExtractor={item => item.id}
+                                            />
+                                        </View>
+                                        <View style={{ marginTop: 10 }}>
+                                            {this.state.arrCRets.length > 0 && <Text style={{ color: '#8492A6', fontWeight: 'bold' }}>Thẻ</Text>}
+                                            <FlatList
+                                                //scrollEnabled={true}
+                                                data={this.state.arrCRets}
+                                                renderItem={({ item }) => <RenderCard item={item} navigation={this.props.navigation} />}
+                                                keyExtractor={item => item.id}
+                                            />
+                                        </View>
+                                    </>
+                        }
+                    </View>
+                </ScrollView>
             </Container>
         );
     }

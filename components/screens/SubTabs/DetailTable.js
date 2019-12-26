@@ -5,13 +5,12 @@ import {
     Button,
     StyleSheet,
     Dimensions,
-    Text,
     Alert,
     Animated,
     PanResponder,
     TouchableOpacity
 } from 'react-native';
-import { Thumbnail } from 'native-base';
+import { Thumbnail, Text } from 'native-base';
 import { withNavigation } from 'react-navigation';
 import Carousel from 'react-native-snap-carousel';
 import firebase from 'react-native-firebase';
@@ -19,7 +18,8 @@ import CardDetail from "./CardDetail";
 import { Icon } from 'native-base';
 import { bigStyles } from './Card/styles';
 import AddCard from '../../common/Card/AddCard';
-import Menu, { MenuItem, MenuDivider } from 'react-native-material-menu';
+import UpdateListName from '../../common/Board/UpdateListName';
+import Menu, { MenuItem } from 'react-native-material-menu';
 
 const ScreenWidth = Dimensions.get("window").width;
 
@@ -213,46 +213,49 @@ class DetailTable extends Component {
                 }}>
                 <View style={styles.header}>
                     <Text style={styles.title}>{item.name}</Text>
-                    <Menu
-                        ref={component => this._menu = component}
-                        button={<TouchableOpacity style={{ paddingLeft: 10, paddingRight: 10 }}
-                            onPress={() => { this._menu.show() }}>
-                            <Icon name="more" style={{ color: 'white' }} />
-                        </TouchableOpacity>}
-                    >
-                        <MenuItem onPress={() => {
-                            Alert.alert(
-                                'Xóa danh sách',
-                                'Bạn muốn xóa danh sách này? Toàn bộ thẻ trong danh sách cũng sẽ bị xóa.',
-                                [
-                                    {
-                                        text: 'Hủy',
-                                        style: 'cancel',
-                                    },
-                                    {
-                                        text: 'Xóa', onPress: () => {
-                                            //xóa mọi thẻ có lid = this lid
-                                            firebase.firestore().collection('cards').where('lid', '==', item.id)
-                                                .get()
-                                                .then(query => {
-                                                    query.forEach(doc => {
-                                                        doc.ref.delete();
+                    <View style={{ flexDirection: 'row' }}>
+                        <TouchableOpacity style={{ marginRight: 10 }}
+                            onPress={() => {
+                                this.showModalUpdateListName(item.id, item.name);
+                            }}>
+                            <Icon name="md-create" />
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={() => {
+                                Alert.alert(
+                                    'Xóa danh sách',
+                                    'Bạn muốn xóa danh sách này? Toàn bộ thẻ trong danh sách cũng sẽ bị xóa.',
+                                    [
+                                        {
+                                            text: 'Hủy',
+                                            style: 'cancel',
+                                        },
+                                        {
+                                            text: 'Xóa', onPress: () => {
+                                                //xóa mọi thẻ có lid = this lid
+                                                firebase.firestore().collection('cards').where('lid', '==', item.id)
+                                                    .get()
+                                                    .then(query => {
+                                                        query.forEach(doc => {
+                                                            doc.ref.delete();
+                                                        });
                                                     });
-                                                });
-                                            
-                                            //xóa danh sách
-                                            this.ref.doc(item.id).delete();
-                                        }
-                                    },
-                                ],
-                                { cancelable: false },
-                            );
-                        }}>Xóa</MenuItem>
-                    </Menu>
+
+                                                //xóa danh sách
+                                                this.ref.doc(item.id).delete();
+                                            }
+                                        },
+                                    ],
+                                    { cancelable: false },
+                                );
+                            }}>
+                            <Icon name="md-trash" />
+                        </TouchableOpacity>
+                    </View>
 
                 </View>
                 <View style={styles.item}>
-                    <CardDetail members={this.props.data.members} bid={this.props.data.id}
+                    <CardDetail isAdmin={this.props.data.author == firebase.auth().currentUser.uid} members={this.props.data.members} bid={this.props.data.id}
                         ListName={item.name} ListId={item.id} SlideId={index}
                         PanResponder={this._panResponder} getdt={this.getCard}
                         setDrag={this.setDrag} navigation={this.props.navigation}
@@ -262,7 +265,9 @@ class DetailTable extends Component {
                     <Button title="Thêm thẻ"
                         onPress={() => {
                             this.showModal(item.id);
-                        }}></Button>
+                        }}
+                        color="#F3C537"
+                    ></Button>
                 </View>
             </View >
         )
@@ -270,6 +275,12 @@ class DetailTable extends Component {
 
     showModal(selectedList) {
         this.refs.modalThemThe.show(selectedList);
+    }
+
+
+    showModalUpdateListName(lid, name) {
+
+        this.refs.modalUpdateListName.show(lid, name);
     }
 
     renderMember() {
@@ -281,6 +292,7 @@ class DetailTable extends Component {
     }
 
     render() {
+        //console.log('isadmin = ', this.props.data.author);
         return (
             <View style={{ flex: 1, width: "100%", height: "100%" }}>
                 <View
@@ -345,6 +357,7 @@ class DetailTable extends Component {
                     />
                 </View>
                 <AddCard ref={'modalThemThe'} list={this.state.listList} bid={this.props.data.id}></AddCard>
+                <UpdateListName ref={'modalUpdateListName'} bid={this.props.data.id} />
             </View>
         );
     }
@@ -358,13 +371,13 @@ const styles = StyleSheet.create({
     },
     header: {
         padding: 10,
-        backgroundColor: "#8492A6",
+        backgroundColor: "#F3C537",
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center'
     },
     title: {
-        fontSize: 16
+        //fontSize: 16
     },
     card: {
         backgroundColor: "#ebecf0",

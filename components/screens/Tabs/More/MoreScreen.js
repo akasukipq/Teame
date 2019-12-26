@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import {
   View,
-  Text,
   StyleSheet,
-  TouchableOpacity
+  TouchableOpacity,
+  Alert
 } from 'react-native';
-import { Container, Header, Content, Body, Left, Icon, Title, Right, Thumbnail, List, ListItem } from 'native-base';
+import { Container, Header, Content, Body, Left, Icon, Title, Right, Thumbnail, List, ListItem, Text } from 'native-base';
 import firebase from 'react-native-firebase';
 import UpdatePass from '../../../common/More/UpdatePass';
+import NavigationService from '../../../common/NavigationService';
 export default class MoreScreen extends Component {
 
   constructor(props) {
@@ -65,7 +66,7 @@ export default class MoreScreen extends Component {
           }
           <List>
             <ListItem itemDivider>
-              <Text>Cài đặt tài khoản</Text>
+              <Text style={{ color: '#8492A6', fontWeight: 'bold' }}>Cài đặt tài khoản</Text>
             </ListItem>
             <ListItem onPress={() => { this.showModalUpdatePass() }}>
               <Left>
@@ -76,7 +77,7 @@ export default class MoreScreen extends Component {
               </Right>
             </ListItem>
             <ListItem itemDivider>
-              <Text>Hỗ trợ</Text>
+              <Text style={{ color: '#8492A6', fontWeight: 'bold' }}>Khác</Text>
             </ListItem>
             <ListItem>
               <Left>
@@ -86,7 +87,13 @@ export default class MoreScreen extends Component {
                 <Icon name="arrow-forward" />
               </Right>
             </ListItem>
-            <ListItem>
+            <ListItem
+              onPress={() => {
+                firebase.auth().signOut().then(() => {
+                  NavigationService.navigate('Auth');
+                });
+
+              }}>
               <Left>
                 <Text>Đăng xuất</Text>
               </Left>

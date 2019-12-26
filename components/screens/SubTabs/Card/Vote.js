@@ -1,13 +1,17 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, FlatList, ProgressBarAndroid } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, FlatList, ProgressBarAndroid, ScrollView } from 'react-native';
 import firebase from 'react-native-firebase';
-import { Icon } from 'native-base';
+import { Text, Icon } from 'native-base';
 import AddVote from '../../../common/Card/AddVote';
 
 function Item({ data, show }) {
     return (
-        <View style={{ padding: 5, backgroundColor: '#C4C4C4', borderRadius: 5, marginBottom: 10 }}>
-            <View>
+        <View style={{ padding: 5, borderRadius: 5, marginBottom: 10, borderWidth: 1, borderColor: "#F3C537" }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                <Icon name="md-analytics" style={{ color: '#F3C537', marginRight: 10, }} />
+                <Text style={{ color: '#C4C4C4' }}>Thăm dò ý kiến</Text>
+            </View>
+            <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                 <Text>{data.name}</Text>
             </View>
             <View style={{ marginTop: 10 }}>
@@ -19,6 +23,7 @@ function Item({ data, show }) {
                             <View style={{ marginBottom: 5 }}>
                                 <Text>{item.name}</Text>
                                 <ProgressBarAndroid styleAttr="Horizontal"
+                                    color="#F3C537"
                                     progress={data.sum == 0 ? 0 : item.count.length / data.sum}
                                     indeterminate={false} />
                             </View>
@@ -29,10 +34,11 @@ function Item({ data, show }) {
             </View>
             <View style={{ padding: 10, alignItems: 'center' }}>
                 <TouchableOpacity
+                    style={{ backgroundColor: '#21272E', borderColor: '#21272E', borderWidth: 1, borderRadius: 5, padding: 5 }}
                     onPress={() => {
                         show('VOTE', data);
                     }}>
-                    <Text>THAM GIA BẦU CHỌN</Text>
+                    <Text style={{ color: '#F3C537' }}>Bình chọn</Text>
                 </TouchableOpacity>
             </View>
         </View>
@@ -75,31 +81,32 @@ export default class Vote extends Component {
 
     render() {
         return (
-            <View style={{ flex: 1, flexDirection: 'column' }}>
-                <View style={styles.section}>
-                    <View style={styles.title}>
-                        <Icon name='md-clipboard' style={[styles.article, { fontSize: 14, }]}></Icon>
-                        <Text style={[{ marginLeft: 5 }, styles.article]}>Bầu chọn ý kiến</Text>
+            <View style={{ flex: 1, flexDirection: 'column', padding: 10 }}>
+                <ScrollView>
+                    <View style={styles.section}>
+                        <FlatList
+                            scrollEnabled={false}
+                            showsVerticalScrollIndicator={false}
+                            data={this.state.votes}
+                            renderItem={({ item }) => <Item data={item} show={this.refs.modalVote.show}></Item>}
+                            keyExtractor={item => item.id}
+                            extraData={this.state}
+                        />
                     </View>
-                </View>
-                <View style={styles.section}>
-                    <FlatList
-                        showsVerticalScrollIndicator={false}
-                        data={this.state.votes}
-                        renderItem={({ item }) => <Item data={item} show={this.refs.modalVote.show}></Item>}
-                        keyExtractor={item => item.id}
-                        extraData={this.state}
-                    />
-                </View>
-                <View style={styles.section}>
-                    <TouchableOpacity
-                        onPress={() => {
-                            this.refs.modalVote.show('ADD');
-                        }}>
-                        <Text>Thêm cuộc bầu chọn</Text>
-                    </TouchableOpacity>
-                </View>
-                <AddVote ref={'modalVote'} cid={this.props.data.id}></AddVote>
+                    <View style={[styles.section, {
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                    }]}>
+                        <TouchableOpacity
+                            onPress={() => {
+                                this.refs.modalVote.show('ADD');
+                            }}>
+                            <Text style={{ color: '#F3C537' }}>Thêm cuộc bầu chọn</Text>
+                        </TouchableOpacity>
+                    </View>
+                    <AddVote ref={'modalVote'} cid={this.props.data.id}></AddVote>
+                </ScrollView>
+
             </View>
         );
     }
@@ -108,6 +115,7 @@ export default class Vote extends Component {
 const styles = StyleSheet.create({
     section: {
         marginTop: 10,
+
     },
     title: {
         flexDirection: 'row',

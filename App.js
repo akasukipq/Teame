@@ -116,7 +116,7 @@ const TabNavigator = createBottomTabNavigator({
   "Thêm": MoreStack
 }, {
   tabBarOptions: {
-    style:{
+    style: {
       backgroundColor: "#F3C537",
     },
     activeBackgroundColor: '#21272E',
@@ -205,7 +205,6 @@ class Root extends Component {
     let fcmToken = await AsyncStorage.getItem('fcmToken');
     if (!fcmToken) {
       fcmToken = await firebase.messaging().getToken();
-      console.log('token = ', fcmToken);
       if (fcmToken) {
         // user has a device token
         await AsyncStorage.setItem('fcmToken', fcmToken);
