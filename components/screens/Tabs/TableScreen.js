@@ -45,6 +45,7 @@ export default class TableScreen extends Component {
                 name: user.data().name,
                 avatar: user.data().photoURL,
                 email: user.data().email,
+                token: user.data().token,
                 pos: position
               });
 

@@ -21,6 +21,7 @@ class Info extends Component {
       deadline: this.props.data.deadline,
       describe: this.props.data.describe,
       label: this.props.data.label,
+      //oldMembersUid: this.props.data.members,
       membersUid: this.props.data.members, //member uid của card
       members: this.props.bmembers, //member trong bảng
       membersCard: [],
@@ -216,15 +217,15 @@ class Info extends Component {
             paddingRight: 5
           }]}>
             <View style={[styles.title, { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }]}>
-              <View style={{ flexDirection: 'row', alignItems: 'center'}}>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <Icon type='FontAwesome' name='map-marker' style={[styles.article, { fontSize: 14, }]}></Icon>
-                <Text style={[{ marginLeft: 5}, styles.article]}>Địa điểm</Text>
+                <Text style={[{ marginLeft: 5 }, styles.article]}>Địa điểm</Text>
               </View>
               <TouchableOpacity
                 onPress={() => {
                   Linking.openURL(`geo:0,0?q=${this.state.address}`);
                 }}>
-                <Text style={{ color :'#F3C537'}}>Mở map</Text>
+                <Text style={{ color: '#F3C537' }}>Mở map</Text>
               </TouchableOpacity>
             </View>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -247,6 +248,25 @@ class Info extends Component {
           {this.state.editMode &&
             <View style={styles.section}>
               <TouchableOpacity onPress={() => {
+                //
+                this.state.membersUid.forEach((item) => {
+                  if(!this.props.data.members.contains(item))
+                  {
+                    firebase.firestore().collection('request').add({
+                      from: firebase.auth().currentUser.displayName,
+                      payload: {
+                        bmembers: this.state.members,
+                        lname: this.props.lname,
+                        cid: this.props.data.id
+                      },
+                      status: false,
+                      to: item,
+                      toToken: this.state.members.token,
+                      type: 'add'
+                    });
+                  }
+                });
+                //
                 firebase.firestore().collection('cards').doc(this.props.data.id).update({
                   name: this.state.name,
                   describe: this.state.describe,
@@ -292,7 +312,7 @@ class Info extends Component {
             });
           }}
         >
-          <Icon name={this.state.editMode ? "md-close" : "md-create"} style={{color: '#F3C537'}} />
+          <Icon name={this.state.editMode ? "md-close" : "md-create"} style={{ color: '#F3C537' }} />
         </Fab>}
       </View>
     );

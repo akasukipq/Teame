@@ -71,30 +71,7 @@ function Item({ data }) {
                                         status: true
                                     });
                                     // Lấy data đổ vào chi tiết card
-                                    const users = [];
-                                    firebase.firestore().collection('boards').doc(data.payload.bid).get()
-                                        .then(doc => {
-                                            doc.data().members.forEach(val => {
-                                                firebase.firestore().collection('users').doc(val).get()
-                                                    .then(user => {
-                                                        let position = doc.data().author == user.data().uid ? 'ADMIN' : 'MEMBER';
-                                                        users.push({
-                                                            uid: user.data().uid,
-                                                            name: user.data().name,
-                                                            avatar: user.data().photoURL,
-                                                            email: user.data().email,
-                                                            pos: position
-                                                        });
-                                                    });
-                                            });
-
-                                            firebase.firestore().collection('boards').doc(data.payload.bid).collection('lists').doc(data.payload.lid)
-                                                .get().then(list => {
-                                                    let namee = list.data().name;
-                                                    NavigationService.navigate('Chi tiết card', { id: item.id, name: namee, members: users });
-                                                });
-                                        });
-
+                                    NavigationService.navigate('Chi tiết card', { id: data.payload.cid, name: data.payload.lname, members: data.payload.bmembers });
                                 }}>
                                 <Text style={{ color: '#F3C537' }}>XEM THẺ</Text>
                             </TouchableOpacity>
