@@ -68,7 +68,7 @@ export default class CardViewScreen extends Component {
     _renderTab() {
         switch (this.state.index) {
             case 0:
-                return <Info data={this.state.Card} bmembers={this.props.navigation.state.params.members} />
+                return <Info data={this.state.Card} bmembers={this.props.navigation.state.params.members} isAdmin={this.props.navigation.state.params.isAdmin } />
                 break;
             case 1:
                 return <Checklist data={this.state.Card} />

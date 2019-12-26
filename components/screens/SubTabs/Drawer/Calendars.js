@@ -272,7 +272,7 @@ export default class Calendars extends Component {
                                         borderColor: '#F3C537'
                                     }}
                                     onPress={() => {
-                                        this.props.navigation.navigate("Chi tiết card", { id: item.id, name: item.lname, members: item.bmembers });
+                                        this.props.navigation.navigate("Chi tiết card", { id: item.id, name: item.lname, members: item.bmembers, isAdmin: this.props.navigation.state.params.isAdmin });
                                     }}>
                                     <View style={{flexDirection: 'row-reverse'}}>
                                         <View style={{ width: 10, height: 10, backgroundColor: "#21272E", borderWidth: 1, borderColor: '#21272E', borderRadius: 90 }} />

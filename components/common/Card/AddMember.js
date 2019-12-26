@@ -38,7 +38,7 @@ export default class AddCard extends Component {
                         <TouchableOpacity
                             onPress={() => {
                                 //tìm vị trí phần tử
-                                const temp =  this.state.selectedList;
+                                const temp = this.state.selectedList;
                                 let index = this.state.selectedList.indexOf(val.uid);
                                 temp.splice(index, 1);
                                 this.setState({
@@ -87,6 +87,7 @@ export default class AddCard extends Component {
                 </View>
                 <View style={{ flexDirection: 'row-reverse', marginTop: 10, alignItems: 'flex-end' }}>
                     <TouchableOpacity style={{ marginLeft: 10 }} onPress={() => {
+                        console.log('thành viên của thẻ này = ', this.state.selectedList);
                         this.props.update(this.state.selectedList);
                         this.refs.modal.close();
                     }} >

@@ -4,7 +4,7 @@ import { Container, Header, Content, Button, Title, Body, Right, Left, Icon, Lis
 import AddMember from '../../../common/Board/AddMember';
 import firebase from 'react-native-firebase';
 
-function Member({ data, removeMember }) {
+function Member({ data, removeMember, isAdmin }) {
   return (
     <ListItem thumbnail>
       <Left>
@@ -16,7 +16,7 @@ function Member({ data, removeMember }) {
         <Text note numberOfLines={1}>{data.email}</Text>
       </Body>
       <Right>
-        {data.pos == 'MEMBER' &&
+        {data.pos == 'MEMBER' && isAdmin &&
           <Button transparent
             onPress={() => {
               removeMember(data);
@@ -44,8 +44,8 @@ export default class Members extends Component {
   }
 
   componentDidMount() {
-    let listMemberId = this.props.navigation.state.params.members.map(mem => mem.uid);
-    let members = this.props.navigation.state.params.members;
+    let listMemberId = this.props.navigation.state.params.tbdata.members.map(mem => mem.uid);
+    let members = this.props.navigation.state.params.tbdata.members;
     this.setState({ listMemberId, members });
   }
 
@@ -57,7 +57,7 @@ export default class Members extends Component {
     this.setState({
       listMemberId: temp
     });
-    firebase.firestore().collection('boards').doc(this.props.navigation.state.params.id).update({
+    firebase.firestore().collection('boards').doc(this.props.navigation.state.params.tbdata.id).update({
       members: temp
     }).then(() => {
       //xóa chay sau
@@ -72,9 +72,9 @@ export default class Members extends Component {
   };
 
   render() {
-    let members = this.props.navigation.state.params.members;
-    let bid = this.props.navigation.state.params.id;
-    let bname = this.props.navigation.state.params.name;
+    let members = this.props.navigation.state.params.tbdata.members;
+    let bid = this.props.navigation.state.params.tbdata.id;
+    let bname = this.props.navigation.state.params.tbdata.name;
     return (
       <Container>
         <Header androidStatusBarColor="#21272E" style={{ backgroundColor: "#21272E" }}>
@@ -102,7 +102,7 @@ export default class Members extends Component {
             <FlatList
               showsVerticalScrollIndicator={false}
               data={members}
-              renderItem={({ item }) => <Member data={item} removeMember={this.removeMember}></Member>}
+              renderItem={({ item }) => <Member data={item} removeMember={this.removeMember} isAdmin={this.props.navigation.state.params.isAdmin}></Member>}
               keyExtractor={item => item.name}
             />
           </List>

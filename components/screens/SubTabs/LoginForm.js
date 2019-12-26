@@ -68,7 +68,13 @@ export default class LoginForm extends Component {
                             <Text style={{ marginLeft: 10, color: "grey" }}>Remember me</Text>
                         </View>
                         <View style={{ paddingTop: 20 }}>
+                            <TouchableOpacity
+                            onPress={() => {
+                                this.props.nav.navigate('Quên mật khẩu');
+                            }}>
                             <Text style={{ color: "#184576", fontStyle: "italic" }}>Forgot password?</Text>
+                            </TouchableOpacity>
+                            
                         </View>
                     </View>
                     <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 20, alignItems: "center" }}>

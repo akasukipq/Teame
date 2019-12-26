@@ -214,6 +214,7 @@ class DetailTable extends Component {
                 <View style={styles.header}>
                     <Text style={styles.title}>{item.name}</Text>
                     <View style={{ flexDirection: 'row' }}>
+                        {this.props.isAdmin && <>
                         <TouchableOpacity style={{ marginRight: 10 }}
                             onPress={() => {
                                 this.showModalUpdateListName(item.id, item.name);
@@ -251,6 +252,7 @@ class DetailTable extends Component {
                             }}>
                             <Icon name="md-trash" />
                         </TouchableOpacity>
+                        </>}
                     </View>
 
                 </View>
@@ -262,12 +264,12 @@ class DetailTable extends Component {
                         collectDeadline={this.props.addDeadline} />
                 </View>
                 <View>
-                    <Button title="Thêm thẻ"
+                    {this.props.isAdmin && <Button title="Thêm thẻ"
                         onPress={() => {
                             this.showModal(item.id);
                         }}
                         color="#F3C537"
-                    ></Button>
+                    ></Button>}
                 </View>
             </View >
         )

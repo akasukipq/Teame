@@ -59,7 +59,7 @@ function Item({ data }) {
                                         status: true
                                     });
                                     // Lấy data đổ vào chi tiết card
-                                    /*const users = [];
+                                    const users = [];
                                     firebase.firestore().collection('boards').doc(data.payload.bid).get()
                                         .then(doc => {
                                             doc.data().members.forEach(val => {
@@ -82,7 +82,7 @@ function Item({ data }) {
                                                     NavigationService.navigate('Chi tiết card', { id: item.id, name: namee, members: users });
                                                 });
                                         });
-                                        */
+                                        
                                 }}>
                                 <Text style={{ color: '#F3C537' }}>XEM THẺ</Text>
                             </TouchableOpacity>

@@ -10,6 +10,7 @@ import RegisterScreen from "./Tabs/RegisterScreen";
 import CardViewScreen from './Tabs/CardViewScreen';
 import NotyScreen from './Tabs/NotyScreen';
 import SearchScreen from './Tabs/SearchScreen';
+import ForgotPasswordScreen from './Tabs/ForgotPasswordScreen';
 
 export {
     HomeScreen,
@@ -23,5 +24,6 @@ export {
     RegisterScreen,
     NotyScreen,
     ProfileScreen,
-    SearchScreen
+    SearchScreen,
+    ForgotPasswordScreen
 }

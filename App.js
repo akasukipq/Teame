@@ -21,7 +21,8 @@ import {
   CardViewScreen,
   NotyScreen,
   ProfileScreen,
-  SearchScreen
+  SearchScreen,
+  ForgotPasswordScreen
 } from './components/screens';
 import Members from './components/screens/SubTabs/Drawer/Members';
 import Calendars from './components/screens/SubTabs/Drawer/Calendars';
@@ -71,7 +72,8 @@ const MoreStack = createStackNavigator({
 
 const AuthStack = createStackNavigator({
   "Đăng nhập": LoginScreen,
-  "Đăng ký": RegisterScreen
+  "Đăng ký": RegisterScreen,
+  "Quên mật khẩu": ForgotPasswordScreen
 }, {
   headerMode: 'none',
 })

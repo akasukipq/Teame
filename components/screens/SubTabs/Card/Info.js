@@ -263,7 +263,7 @@ class Info extends Component {
         </ScrollView>
         <AddLabel ref={'modalNhan'} update={this.updateLabel}></AddLabel>
         <AddMember ref={'modalMember'} members={this.state.members} update={this.updateMember} ></AddMember>
-        <Fab
+        {this.props.isAdmin && <Fab
           position="bottomRight"
           style={{ backgroundColor: '#21272E', width: 50, height: 50 }}
           onPress={() => {
@@ -293,7 +293,7 @@ class Info extends Component {
           }}
         >
           <Icon name={this.state.editMode ? "md-close" : "md-create"} style={{color: '#F3C537'}} />
-        </Fab>
+        </Fab>}
       </View>
     );
   }

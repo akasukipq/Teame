@@ -73,14 +73,14 @@ export default class TableDetailScreen extends Component {
                 <View style={{ marginLeft: 50, marginTop: 20 }}>
                     <TouchableOpacity style={{ marginBottom: 30, flexDirection: 'row', alignItems: 'center' }}
                         onPress={() => {
-                            this.props.navigation.navigate('Thành viên', this.state.tbdata);
+                            this.props.navigation.navigate('Thành viên', { tbdata: this.state.tbdata, isAdmin: this.isAdmin });
                         }}>
                         <Icon name="person" style={{ color: "#F3C537" }} />
                         <Text style={{ marginLeft: 40, color: '#F3C537' }}>Thành viên</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={{ marginBottom: 30, flexDirection: 'row', alignItems: 'center' }}
                         onPress={() => {
-                            this.props.navigation.navigate('Lịch', { deadline: this.state.listDeadline, deadDate: this.state.listDeadlineDate });
+                            this.props.navigation.navigate('Lịch', { deadline: this.state.listDeadline, deadDate: this.state.listDeadlineDate, isAdmin: this.isAdmin });
                         }}>
                         <Icon name="md-calendar" style={{ color: "#F3C537" }} />
                         <Text style={{ marginLeft: 40, color: '#F3C537' }}>Lịch</Text>
@@ -177,11 +177,11 @@ export default class TableDetailScreen extends Component {
                             <Title style={{ color: "#F3C537" }}>{this.state.tbdata.name}</Title>
                         </Body>
                         <Right>
-                            <Button transparent onPress={() => {
+                            {this.isAdmin && <Button transparent onPress={() => {
                                 this.showModalThemDs(this.state.tbdata.id);
                             }}>
                                 <Icon style={{ color: "#F3C537" }} name="md-add" />
-                            </Button>
+                            </Button>}
                             <Button transparent
                                 onPress={() => {
                                     this.refs.sidebar.openDrawer();
@@ -191,7 +191,7 @@ export default class TableDetailScreen extends Component {
                         </Right>
                     </Header>
                     <Content contentContainerStyle={{ flex: 1 }}>
-                        <DetailTable data={this.state.tbdata} addDeadline={this.addDeadline} />
+                        <DetailTable data={this.state.tbdata} addDeadline={this.addDeadline} isAdmin={this.isAdmin} />
                         <AddList ref={'modalThemDs'}></AddList>
                         <UpdateName ref={'modalUpdateName'} id={this.state.tbdata.id}></UpdateName>
                     </Content>
