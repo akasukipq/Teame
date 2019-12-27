@@ -7,6 +7,7 @@ import com.facebook.react.PackageList;
 import com.facebook.hermes.reactexecutor.HermesExecutorFactory;
 import com.facebook.react.bridge.JavaScriptExecutorFactory;
 import com.facebook.react.ReactApplication;
+import co.apptailor.googlesignin.RNGoogleSigninPackage;
 import com.vonovak.AddCalendarEventPackage;
 import com.RNFetchBlob.RNFetchBlobPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
@@ -18,6 +19,7 @@ import io.invertase.firebase.notifications.RNFirebaseNotificationsPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.soloader.SoLoader;
+import co.apptailor.googlesignin.RNGoogleSigninPackage;  // <--- import
 
 import java.util.List;
 
@@ -40,6 +42,7 @@ public class MainApplication extends Application implements ReactApplication {
       packages.add(new RNFirebaseStoragePackage());
       packages.add(new RNFirebaseMessagingPackage()); // <-- Add this line
       packages.add(new RNFirebaseNotificationsPackage());
+    // packages.add(new RNGoogleSigninPackage()); // <-- this needs to be in the list
       return packages;
 
     }

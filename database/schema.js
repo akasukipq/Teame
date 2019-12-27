@@ -67,6 +67,15 @@ export const deleteTodoList = todoList => new Promise((resolve, reject) => {
         .catch((error) => reject(error));
 });
 
+export const getNumList = () =>  new Promise((resolve, reject) => {
+    Realm.open(databaseOptions)
+        .then(realm => {
+            let allData = realm.objects(TODOLIST_SCHEMA);
+            resolve(allData.length);
+        })
+        .catch((error) => reject(error));
+});
+
 export const getAllTodoList = () => new Promise((resolve, reject) => {
     Realm.open(databaseOptions)
         .then(realm => {

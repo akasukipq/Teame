@@ -48,7 +48,7 @@ export default class UpdateName extends Component {
                         //đóng modal
                         this.refs.modal.close();
                     }}>
-                        <Text>XÁC NHẬN</Text>
+                        <Text style={{color: '#F3C537'}}>XÁC NHẬN</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={{ marginRight: 10 }}
                         onPress={() => {

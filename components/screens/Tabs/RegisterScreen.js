@@ -22,7 +22,7 @@ export default class RegisterScreen extends Component {
 
     render() {
         return (
-            <View style={styles.container}>
+            <View style={styles.container}  androidStatusBarColor="#21272E">
                 <View style={styles.headerContainer}>
                     <Image source={require('../../../public/images/logo.png')} style={styles.logo}></Image>
                     <Text style={styles.title}>Đăng ký</Text>
@@ -38,15 +38,16 @@ export default class RegisterScreen extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#184576",
+        backgroundColor: "#21272E",
     },
     headerContainer: {
-        flex: 4,
+        flex: 3,
         alignItems: "center",
     },
     inputContainer: {
-        flex: 6,
-        margin: 30,
+        flex: 7,
+        justifyContent: 'center',
+        margin:20,
 
     },
     title: {

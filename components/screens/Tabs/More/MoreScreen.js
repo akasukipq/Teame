@@ -3,7 +3,8 @@ import {
   View,
   StyleSheet,
   TouchableOpacity,
-  Alert
+  Alert,
+  AsyncStorage
 } from 'react-native';
 import { Container, Header, Content, Body, Left, Icon, Title, Right, Thumbnail, List, ListItem, Text } from 'native-base';
 import firebase from 'react-native-firebase';
@@ -21,6 +22,7 @@ export default class MoreScreen extends Component {
   }
 
   componentDidMount() {
+    console.log('users ====', firebase.auth().currentUser);
     this.unsubscriber = firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid)
       .onSnapshot(user => {
         this.setState({
@@ -40,7 +42,7 @@ export default class MoreScreen extends Component {
         <Header noShadow androidStatusBarColor="#21272E" style={{ backgroundColor: '#21272E' }}>
           <Left style={{ flex: 0 }} />
           <Body style={{ flex: 3, padding: 10 }}>
-            <Title style={{ color: '#F3C537' }}>Cài đặt</Title>
+            <Title style={{ color: '#F3C537' }}>Tài khoản</Title>
           </Body>
           <Right style={{ flex: 0 }} />
         </Header>
@@ -79,7 +81,10 @@ export default class MoreScreen extends Component {
             <ListItem itemDivider>
               <Text style={{ color: '#8492A6', fontWeight: 'bold' }}>Khác</Text>
             </ListItem>
-            <ListItem>
+            <ListItem
+              onPress={() => {
+                this.props.navigation.navigate('Help');
+              }}>
               <Left>
                 <Text>Liên hệ hỗ trợ</Text>
               </Left>
@@ -90,9 +95,9 @@ export default class MoreScreen extends Component {
             <ListItem
               onPress={() => {
                 firebase.auth().signOut().then(() => {
-                  NavigationService.navigate('Auth');
+                  NavigationService.navigate('AuthStack');
                 });
-
+                AsyncStorage.setItem('remember', 'false');
               }}>
               <Left>
                 <Text>Đăng xuất</Text>

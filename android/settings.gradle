@@ -1,4 +1,6 @@
 rootProject.name = 'Teame'
+include ':@react-native-community_google-signin', ':app'
+project(':@react-native-community_google-signin').projectDir = new File(rootProject.projectDir, '../node_modules/@react-native-community/google-signin/android')
 include ':react-native-add-calendar-event'
 project(':react-native-add-calendar-event').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-add-calendar-event/android')
 include ':rn-fetch-blob'
@@ -15,4 +17,3 @@ include ':react-native-vector-icons'
 project(':react-native-vector-icons').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-vector-icons/android')
 include ':realm'
 project(':realm').projectDir = new File(rootProject.projectDir, '../node_modules/realm/android')
-include ':app'

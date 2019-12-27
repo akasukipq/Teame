@@ -26,7 +26,7 @@ function User({ data, bid, bname }) {
                         Alert.alert('Thành công', 'Đã gửi lời mời tham gia bảng!');
                     });
                 }}>
-                <Text style={{ color: 'blue' }}>THÊM</Text>
+                <Text style={{color: '#F3C537'}}>THÊM</Text>
             </TouchableOpacity>
         </View>
     )

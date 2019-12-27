@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Container, Header, Content, Icon, Left, Right, Body, Title, Button, Text } from 'native-base';
 import { View, FlatList, TouchableOpacity } from 'react-native';
 import firebase from 'react-native-firebase';
+import NavigationService from '../../common/NavigationService';
 
 function Item({ data }) {
     return (
@@ -26,15 +27,15 @@ function Item({ data }) {
                                             //
 
                                             firebase.firestore().collection('boards').doc(data.payload.bid).get()
-                                            .then(doc => {
-                                                const oldMembers = [
-                                                    ...doc.data().members,
-                                                    firebase.auth().currentUser.uid
-                                                ];
-                                                firebase.firestore().collection('boards').doc(data.payload.bid).update({
-                                                    members: oldMembers
-                                                })
-                                            });
+                                                .then(doc => {
+                                                    const oldMembers = [
+                                                        ...doc.data().members,
+                                                        firebase.auth().currentUser.uid
+                                                    ];
+                                                    firebase.firestore().collection('boards').doc(data.payload.bid).update({
+                                                        members: oldMembers
+                                                    })
+                                                });
                                             firebase.firestore().collection('requests').doc(data.id).update({
                                                 status: true
                                             });
@@ -130,7 +131,17 @@ export default class NotyScreen extends Component {
                     <View>
                         <View style={{ borderBottomWidth: 1, borderBottomColor: '#C4C4C4' }}>
                             <View style={{ flexDirection: 'row-reverse', margin: 10 }}>
-                                <Text style={{ color: 'red' }}>Xóa hết</Text>
+                                <TouchableOpacity onPress={() => {
+                                    firebase.firestore().collection('requests').where('to', '==', firebase.auth().currentUser.uid).get().then((query) => {
+                                        query.forEach(doc => {
+                                            doc.ref.delete();
+                                        });
+                                    })
+                                }
+                                }>
+                                    <Text style={{ color: 'red' }}>Xóa hết</Text>
+                                </TouchableOpacity>
+
                             </View>
                         </View>
 

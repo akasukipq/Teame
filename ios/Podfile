@@ -45,6 +45,8 @@ target 'Teame' do
 
   pod 'react-native-add-calendar-event', :path => '../node_modules/react-native-add-calendar-event'
 
+  pod 'RNGoogleSignin', :path => '../node_modules/@react-native-community/google-signin'
+
   target 'TeameTests' do
     inherit! :search_paths
     # Pods for testing

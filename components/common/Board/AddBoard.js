@@ -57,9 +57,9 @@ export default class AddBoard extends Component {
                         //đóng modal
                         this.refs.modal.close();
                     }}>
-                        <Text>THÊM</Text>
+                        <Text style={{color: '#F3C537'}}>THÊM</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={{ marginRight: 10 }}
+                    <TouchableOpacity style={{ marginRight: 10}}
                         onPress={() => {
                             this.refs.modal.close();
                         }}>

@@ -17,7 +17,7 @@ export default class LoginScreen extends Component {
 
     render() {
         return (
-            <View style={styles.container} >
+            <View style={styles.container} androidStatusBarColor="#21272E" >
                 <View style={styles.headerContainer}>
                     <Image source={require('../../../public/images/logo.png')} style={styles.logo}></Image>
                     <Text style={styles.title}>Đăng nhập</Text>
@@ -36,12 +36,13 @@ const styles = StyleSheet.create({
         backgroundColor: "#21272E",
     },
     headerContainer: {
-        flex: 4,
+        flex: 3,
         alignItems: "center",
     },
     inputContainer: {
-        flex: 6,
-        margin: 30,
+        flex: 7,
+        justifyContent: 'center',
+        margin: 20,
 
     },
     title: {

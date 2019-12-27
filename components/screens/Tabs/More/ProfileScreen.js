@@ -57,9 +57,9 @@ export default class ProfileScreen extends Component {
                 <Header noShadow androidStatusBarColor="#21272E" style={{ backgroundColor: "#21272E" }}>
                     <Left >
                         <Button transparent
-                        onPress={() => {
-                            this.props.navigation.goBack();
-                        }}>
+                            onPress={() => {
+                                this.props.navigation.goBack();
+                            }}>
                             <Icon name="arrow-back" style={{ color: "#F3C537" }} />
                         </Button>
                     </Left>
@@ -72,42 +72,44 @@ export default class ProfileScreen extends Component {
                                 if (this.state.photoURL != '') {
                                     //có thay đổi ảnh
                                     firebase.auth().currentUser.updateProfile({
-                                        photoURL: url
+                                        photoURL: this.state.photoURL
                                     }).then(() => {
                                         //update trong firestore
                                         firebase.firestore().collection('users').doc(user.uid).update({
-                                            photoURL: url
+                                            photoURL: this.state.photoURL
                                         });
                                     });
                                 }
-
-                                //có thay đổi tên
-                                firebase.auth().currentUser.updateProfile({
-                                    displayName: this.state.name,
-                                    email: this.state.email
-                                }).then(() => {
-                                    //update trong firestore
-                                    firebase.firestore().collection('users').doc(user.uid).update({
-                                        name: this.state.name,
+                                if (this.state.name != '') {
+                                    //có thay đổi tên
+                                    firebase.auth().currentUser.updateProfile({
+                                        displayName: this.state.name,
                                         email: this.state.email
-                                    }).then(() => {Alert.alert('Thông báo', 'Cập nhật thông tin thành công!')});
-                                    //update state
-                                    this.setState({
-                                        name: ''
+                                    }).then(() => {
+                                        //update trong firestore
+                                        firebase.firestore().collection('users').doc(user.uid).update({
+                                            name: this.state.name,
+                                            email: this.state.email
+                                        }).then(() => { Alert.alert('Thông báo', 'Cập nhật thông tin thành công!') });
+                                        //update state
+                                        this.setState({
+                                            name: ''
+                                        });
+
                                     });
-                                    
-                                });
+                                }
                             }}>
                             <Title style={{ color: "#F3C537" }}>LƯU</Title>
                         </Button>
                     </Right>
                 </Header>
                 <View>
-                    <View style={{ backgroundColor:"#21272E", justifyContent: 'center', alignItems: 'center', padding: 10 }}>
+                    <View style={{ backgroundColor: "#21272E", justifyContent: 'center', alignItems: 'center', padding: 10 }}>
                         <TouchableOpacity
-                        
+
                             onPress={() => { this.imagePicker() }}>
                             <Thumbnail large style={styles.pro5} large source={{ uri: this.state.photoURL ? this.state.photoURL : user.photoURL }} />
+
                         </TouchableOpacity>
                     </View>
                     <View>
@@ -125,7 +127,7 @@ export default class ProfileScreen extends Component {
                         </Form>
                     </View>
                 </View>
-                
+
             </Container>
 
         );
@@ -134,6 +136,7 @@ export default class ProfileScreen extends Component {
 
 const styles = StyleSheet.create({
     pro5: {
-        marginBottom: 10
+        marginBottom: 10,
+        backgroundColor: 'white'
     }
 });

@@ -22,7 +22,9 @@ import {
   NotyScreen,
   ProfileScreen,
   SearchScreen,
-  ForgotPasswordScreen
+  ForgotPasswordScreen,
+  SplashScreen,
+  Help
 } from './components/screens';
 import Members from './components/screens/SubTabs/Drawer/Members';
 import Calendars from './components/screens/SubTabs/Drawer/Calendars';
@@ -65,11 +67,11 @@ const TodoStack = createStackNavigator({
 
 const MoreStack = createStackNavigator({
   'Thêm': MoreScreen,
-  'Pro5': ProfileScreen
+  'Pro5': ProfileScreen,
+  'Help': Help
 }, {
   headerMode: 'none',
 })
-
 const AuthStack = createStackNavigator({
   "Đăng nhập": LoginScreen,
   "Đăng ký": RegisterScreen,
@@ -77,6 +79,11 @@ const AuthStack = createStackNavigator({
 }, {
   headerMode: 'none',
 })
+
+const BeginStack = createSwitchNavigator({
+  "Splash": SplashScreen,
+  "AuthStack": AuthStack
+});
 
 TableStack.navigationOptions = ({ navigation }) => {
   let tabBarVisible = true;
@@ -115,7 +122,7 @@ const TabNavigator = createBottomTabNavigator({
   "Bảng": TableStack,
   "Checklist": TodoStack,
   "Thông báo": NotyScreen,
-  "Thêm": MoreStack
+  "Tài khoản": MoreStack
 }, {
   tabBarOptions: {
     style: {
@@ -143,8 +150,8 @@ const TabNavigator = createBottomTabNavigator({
         iconName = `md-list-box`;
       } else if (routeName === "Checklist") {
         iconName = `md-checkbox${focused ? '' : '-outline'}`;
-      } else if (routeName === "Thêm") {
-        iconName = `ios-more`;
+      } else if (routeName === "Tài khoản") {
+        iconName = `md-person`;
       } else if (routeName === "Thông báo") {
         iconName = `ios-notifications`;
       }
@@ -155,7 +162,7 @@ const TabNavigator = createBottomTabNavigator({
 })
 
 const IndexNavigator = createSwitchNavigator({
-  "Auth": AuthStack,
+  "BeginStack": BeginStack,
   "App": TabNavigator
 })
 

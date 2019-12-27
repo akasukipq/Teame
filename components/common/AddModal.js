@@ -73,7 +73,7 @@ export default class AddModal extends Component {
                             color: this.state.choosen
                         })
                     }}>
-                        <Text>Thêm</Text>
+                        <Text style={{color: '#F3C537'}}>Thêm</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={{ marginRight: 20 }}
                         onPress={() => {

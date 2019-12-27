@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Image, FlatList, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, Image, FlatList, ScrollView, TouchableOpacity, PermissionsAndroid } from 'react-native';
 import DocumentPicker from 'react-native-document-picker';
 import firebase from 'react-native-firebase';
 import { Icon, Fab, Button } from 'native-base';
+import RNFetchBlob from 'rn-fetch-blob';
 
 export default class Attach extends Component {
     constructor(props) {
@@ -15,6 +16,82 @@ export default class Attach extends Component {
         this.storageRef = firebase.storage();
         this.firestoreRef = firebase.firestore().collection('cards').doc(this.props.data.id);
     };
+
+
+    async request_storage_runtime_permission() {
+
+        try {
+            const granted = await PermissionsAndroid.request(
+                PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+                {
+                    'title': 'ReactNativeCode Storage Permission',
+                    'message': 'ReactNativeCode App needs access to your storage to download Photos.'
+                }
+            )
+            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+
+                Alert.alert("Storage Permission Granted.");
+            }
+            else {
+
+                Alert.alert("Storage Permission Not Granted");
+
+            }
+        } catch (err) {
+            console.warn(err)
+        }
+    }
+
+
+    downloadImage = (url) => {
+        var date = new Date();
+        var image_URL = url;
+        var ext = this.getExtention(image_URL);
+        ext = "." + ext[0];
+        const { config, fs } = RNFetchBlob;
+        let PictureDir = fs.dirs.PictureDir
+        let options = {
+            fileCache: true,
+            addAndroidDownloads: {
+                useDownloadManager: true,
+                notification: true,
+                path: PictureDir + "/image_" + Math.floor(date.getTime()
+                    + date.getSeconds() / 2) + ext,
+                description: 'Image'
+            }
+        }
+        config(options).fetch('GET', image_URL).then((res) => {
+            Alert.alert("Tải ảnh thành công!");
+        });
+    }
+
+    downloadFile = (url) => {
+        var date = new Date();
+        var file_URL = url;
+        var ext = this.getExtention(file_URL);
+        ext = "." + ext[0];
+        const { config, fs } = RNFetchBlob;
+        let FileDir = fs.dirs.DownloadDir;
+        let options = {
+            fileCache: true,
+            addAndroidDownloads: {
+                useDownloadManager: true,
+                notification: true,
+                path: FileDir + "/document_" + Math.floor(date.getTime()
+                    + date.getSeconds() / 2) + ext,
+                description: 'Document'
+            }
+        }
+        config(options).fetch('GET', file_URL).then((res) => {
+            Alert.alert("Tải file thành công!");
+        });
+    }
+
+
+    getExtention = (filename) => {
+        return (/[.]/.exec(filename)) ? /[^.]+$/.exec(filename) :
+            undefined;
+    }
 
 
     imagePicker = () => {
@@ -72,7 +149,7 @@ export default class Attach extends Component {
 
 
 
-    componentDidMount() {
+    async componentDidMount() {
         //we get data in firestore at collection `attachments`
         this.firestoreRef.collection('attachments').onSnapshot((query) => {
             const listImageUrl = [];
@@ -106,6 +183,10 @@ export default class Attach extends Component {
             console.log('danh sách image = ', listImageUrl);
             console.log('danh sách doc = ', listDocument);
         });
+
+
+        await this.request_storage_runtime_permission();
+
     }
 
     _renderDocument = ({ item }) => {
@@ -136,12 +217,16 @@ export default class Attach extends Component {
                     <Text style={styles.article}>Dung lượng: {Math.floor(item.size / 1024)}KB</Text>
                 </View>
 
-                <View style={{
+                <TouchableOpacity 
+                onPress={() => {
+                    this.downloadFile(item.url);
+                }}
+                style={{
                     flex: 1,
                     flexDirection: 'row-reverse'
                 }}>
                     <Icon name='md-download' />
-                </View>
+                </TouchableOpacity>
 
             </View>
         )
@@ -149,7 +234,7 @@ export default class Attach extends Component {
 
     render() {
         return (
-            <View style={{ flex: 1, flexDirection: 'column' }}>
+            <View style={{ flex: 1, flexDirection: 'column', padding: 10 }}>
                 <ScrollView>
                     <View style={styles.section}>
                         <View style={styles.title}>
@@ -160,7 +245,13 @@ export default class Attach extends Component {
                             <FlatList
                                 horizontal
                                 data={this.state.listImageUrl}
-                                renderItem={({ item }) => <Image style={{ width: 150, height: 100, borderRadius: 5, marginLeft: 5, marginTop: 5 }} source={{ uri: item.url }} resizeMethod={'resize'} ></Image>}
+                                renderItem={({ item }) =>
+                                    <TouchableOpacity
+                                        onPress={() => {
+                                            this.downloadImage(item.url);
+                                        }}>
+                                        <Image style={{ width: 150, height: 100, borderRadius: 5, marginLeft: 5, marginTop: 5 }} source={{ uri: item.url }} resizeMethod={'resize'} ></Image>
+                                    </TouchableOpacity>}
                                 keyExtractor={item => item.name}
                             />
                         </View>

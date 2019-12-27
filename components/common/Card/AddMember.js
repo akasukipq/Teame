@@ -58,7 +58,7 @@ export default class AddCard extends Component {
                                     ]
                                 });
                             }}>
-                            <Text>Thêm</Text>
+                            <Text style={{color: '#F3C537'}}>Thêm</Text>
                         </TouchableOpacity>}
                 </View>
             </View>

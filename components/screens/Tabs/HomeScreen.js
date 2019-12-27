@@ -7,13 +7,17 @@ import firebase from 'react-native-firebase';
 import NavigationService from '../../common/NavigationService';
 import Carousel from 'react-native-snap-carousel';
 
+import realm, { getNumList } from '../../../database/schema';
+
 export default class HomeScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
       cards: [],
       avatars: [],
-      active: false
+      active: false,
+      countTable: 0,
+      countChecklist: 0
     };
   }
   componentDidMount() {
@@ -51,7 +55,27 @@ export default class HomeScreen extends Component {
         this.setState({ cards });
 
       });
+
+    firebase.firestore().collection('boards').where('members', 'array-contains', firebase.auth().currentUser.uid)
+      .onSnapshot(doc => {
+        this.setState({
+          countTable: doc._docs.length
+        })
+      });
+
+    this.refreshData();
+
+    realm.addListener('change', () => {
+      this.refreshData();
+    })
   }
+  refreshData = () => {
+    getNumList().then(num => {
+      this.setState({
+        countChecklist: num
+      });
+    });
+  };
 
   renderMembers = (members) => {
     return (
@@ -77,8 +101,8 @@ export default class HomeScreen extends Component {
                 <Icon name="table" type="FontAwesome" style={{ color: "#F95F62" }} />
               </View>
               <View style={{ flexDirection: 'row', alignItems: 'flex-start' }}>
-                <Text style={{ color: "#F95F62", fontSize: 40 }}> 3 </Text>
-                <Text style={{ color: "white" }}>bảng</Text>
+                <Text style={{ color: "#F95F62", fontSize: 40, marginLeft: 5 }}>{this.state.countTable}</Text>
+                <Text style={{ color: "white", marginLeft: 5 }}>bảng</Text>
               </View>
             </View>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -86,8 +110,8 @@ export default class HomeScreen extends Component {
                 <Icon name="md-checkbox-outline" style={{ color: "#00A6FF" }} />
               </View>
               <View style={{ flexDirection: 'row', alignItems: 'flex-start' }}>
-                <Text style={{ color: "#00A6FF", fontSize: 40 }} > 3 </Text>
-                <Text style={{ color: "white" }}>checklist</Text>
+                <Text style={{ color: "#00A6FF", fontSize: 40, marginLeft: 5 }} >{this.state.countChecklist}</Text>
+                <Text style={{ color: "white", marginLeft: 5 }}>checklist</Text>
               </View>
 
             </View>
@@ -131,11 +155,11 @@ export default class HomeScreen extends Component {
                             firebase.firestore().collection('boards').doc(item.bid).collection('lists').doc(item.lid)
                               .get().then(list => {
                                 let namee = list.data().name;
-                                NavigationService.navigate('Chi tiết card', { id: item.id, name: namee, members: users });
+                                NavigationService.navigate('Chi tiết card', { id: item.id, name: namee, members: users, isAdmin: doc.data().author == firebase.auth().currentUser.uid });
                               });
                           });
                       }}>
-                      <View style={{ backgroundColor: "#F3C537", padding: 10}}>
+                      <View style={{ backgroundColor: "#F3C537", padding: 10 }}>
                         <View style={{ flexDirection: 'row', marginTop: 10 }}>
                           <View>
                             <Text style={{ fontSize: 16, fontWeight: '700' }}>{item.name}</Text>
@@ -151,7 +175,7 @@ export default class HomeScreen extends Component {
                         </View>
                         <View style={styles.deadline}>
                           <Icon name='md-time' style={{ fontSize: 14, color: '#F3C537' }} />
-                          <Text style={styles.showdeadline}>Ngày hết hạn: {item.deadline}</Text>
+                          {item.deadline && <Text style={styles.showdeadline}>Ngày hết hạn: {item.deadline}</Text>}
                         </View>
                       </View>
                     </TouchableOpacity>

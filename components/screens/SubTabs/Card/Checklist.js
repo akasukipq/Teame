@@ -75,7 +75,7 @@ export default class Checklist extends Component {
             <Text style={[{ marginLeft: 5 }, styles.article]}>Danh sách công việc</Text>
           </View>
           <View style={styles.itemadd}>
-            <TextInput placeholder="Thêm công việc mới..."
+            <TextInput value={this.state.newck} placeholder="Thêm công việc mới..."
               onChangeText={(text) => {
                 this.setState({
                   newck: text
@@ -86,6 +86,9 @@ export default class Checklist extends Component {
                 this.ref.collection('checklist').add({
                   name: this.state.newck,
                   isDone: false
+                })
+                this.setState({
+                  newck: ''
                 })
               }}><Text style={{ color: '#F3C537' }}>THÊM</Text>
             </TouchableOpacity>

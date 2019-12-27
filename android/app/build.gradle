@@ -150,17 +150,19 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+        release {
+            storeFile file(MYAPP_RELEASE_STORE_FILE)
+            storePassword MYAPP_RELEASE_STORE_PASSWORD
+            keyAlias MYAPP_RELEASE_KEY_ALIAS
+            keyPassword MYAPP_RELEASE_KEY_PASSWORD
+        }
     }
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
         }
         release {
-            // Caution! In production, you need to generate your own keystore file.
-            // see https://facebook.github.io/react-native/docs/signed-apk-android.
-            signingConfig signingConfigs.debug
-            minifyEnabled enableProguardInReleaseBuilds
-            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            signingConfig signingConfigs.release
         }
     }
     // applicationVariants are e.g. debug, release
@@ -189,6 +191,7 @@ android {
 }
 
 dependencies {
+    implementation project(':@react-native-community_google-signin')
     implementation project(':react-native-add-calendar-event')
     implementation project(':rn-fetch-blob')
     implementation project(':react-native-gesture-handler')
@@ -204,6 +207,7 @@ dependencies {
     implementation "com.google.firebase:firebase-firestore:19.0.0"
     implementation "com.google.firebase:firebase-storage:17.0.0"
     implementation "com.google.firebase:firebase-messaging:19.0.0"
+    implementation(project(":@react-native-community_google-signin"))
 
 
     // document picker dependency

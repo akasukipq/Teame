@@ -16,7 +16,7 @@ export default class SearchScreen extends Component {
         };
         this.arrBFilter = this.props.navigation.state.params.boards;
         this.arrCFilter = [];
-        this.arrBoardId = this.arrBFilter.map(item => item.id);
+        this.arrBoardId = this.props.navigation.state.params.boards.map(item => item.id);
         console.log('id = ', this.arrBoardId);
     }
 

@@ -4,6 +4,7 @@ import {
   TouchableOpacity,
   FlatList,
   StyleSheet,
+  ScrollView,
 } from 'react-native';
 import { Container, Header, Content, Button, Title, Body, Right, Left, Icon, Fab, Text } from 'native-base';
 import AddBoard from '../../common/Board/AddBoard';
@@ -14,7 +15,8 @@ export default class TableScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      listBoard: [],
+      listNormalBoard: [],
+      listSpecBoard: [],
       boardname: '',
       primary: false,
       active: false,
@@ -30,8 +32,8 @@ export default class TableScreen extends Component {
 
   componentDidMount() {
     this.unsubscriber = this.ref.where('members', 'array-contains', firebase.auth().currentUser.uid).onSnapshot((query) => {
-      const boards = [];
-
+      const SpecBoards = [];
+      const NormBoards = [];
       query.forEach(doc => {
 
         let board = doc;
@@ -55,18 +57,30 @@ export default class TableScreen extends Component {
             });
         })
 
-        boards.push({
-          id: board.id,
-          name: board.data().name,
-          primary: board.data().primary,
-          timestamp: board.data().timestamp,
-          author: board.data().author,
-          members: users
-        })
+        if (board.data().primary == true) {
+          SpecBoards.push({
+            id: board.id,
+            name: board.data().name,
+            primary: board.data().primary,
+            timestamp: board.data().timestamp,
+            author: board.data().author,
+            members: users
+          });
+        } else {
+          NormBoards.push({
+            id: board.id,
+            name: board.data().name,
+            primary: board.data().primary,
+            timestamp: board.data().timestamp,
+            author: board.data().author,
+            members: users
+          });
+        }
       });
 
       this.setState({
-        listBoard: boards,
+        listSpecBoard: SpecBoards,
+        listNormalBoard: NormBoards
       });
     });
   }
@@ -86,27 +100,34 @@ export default class TableScreen extends Component {
           </Body>
           <Right>
             <Button transparent
-              onPress={() => { this.props.navigation.navigate('Tìm kiếm', { 'boards': this.state.listBoard }) }}>
+              onPress={() => { this.props.navigation.navigate('Tìm kiếm', { 'boards': [...this.state.listNormalBoard, ...this.state.listSpecBoard] }) }}>
               <Icon style={{ color: "#F3C537" }} name="search" />
             </Button>
           </Right>
         </Header>
-        <Content contentContainerStyle={{ flex: 1 }}>
+        <Content contentContainerStyle={{ flex: 1, padding: 10 }}>
           <AddBoard ref={'modalThemBang'}></AddBoard>
-          <View style={styles.container}>
-            <View >
-              <Text style={{ color: '#8492A6', fontWeight: 'bold' }}>Danh sách bảng</Text>
-            </View>
-            <View>
+          <View >
+            <Text style={{ color: '#8492A6', fontWeight: 'bold' }}>Danh sách bảng</Text>
+          </View>
+            <ScrollView style={{paddingBottom: 30}}>
               <FlatList
+                scrollEnabled={false}
                 showsVerticalScrollIndicator={false}
-                data={this.state.listBoard}
+                data={this.state.listSpecBoard}
                 renderItem={({ item }) => <RenderBoard data={item} navigation={this.props.navigation}></RenderBoard>}
                 keyExtractor={item => item.id}
                 extraData={this.state.active}
               />
-            </View>
-          </View>
+              <FlatList
+                scrollEnabled={false}
+                showsVerticalScrollIndicator={false}
+                data={this.state.listNormalBoard}
+                renderItem={({ item }) => <RenderBoard data={item} navigation={this.props.navigation}></RenderBoard>}
+                keyExtractor={item => item.id}
+                extraData={this.state.active}
+              />
+            </ScrollView>
         </Content>
         <Fab
           position="bottomRight"
@@ -124,7 +145,7 @@ export default class TableScreen extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    margin: 10,
+    //margin: 10,
     padding: 10
   },
 })

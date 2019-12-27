@@ -2,6 +2,7 @@ import HomeScreen from './Tabs/HomeScreen';
 import TableScreen from './Tabs/TableScreen';
 import TodoScreen from './Tabs/TodoScreen';
 import MoreScreen from './Tabs/More/MoreScreen';
+import Help from './Tabs/More/Help';
 import ProfileScreen from './Tabs/More/ProfileScreen';
 import TableDetailScreen from './Tabs/TableDetailScreen';
 import LoginScreen from './Tabs/LoginScreen';
@@ -11,6 +12,7 @@ import CardViewScreen from './Tabs/CardViewScreen';
 import NotyScreen from './Tabs/NotyScreen';
 import SearchScreen from './Tabs/SearchScreen';
 import ForgotPasswordScreen from './Tabs/ForgotPasswordScreen';
+import SplashScreen from './Tabs/SplashScreen';
 
 export {
     HomeScreen,
@@ -25,5 +27,7 @@ export {
     NotyScreen,
     ProfileScreen,
     SearchScreen,
-    ForgotPasswordScreen
+    ForgotPasswordScreen,
+    SplashScreen,
+    Help
 }

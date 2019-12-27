@@ -99,7 +99,7 @@ export default class AddVote extends Component {
                                                 option: ''
                                             });
                                         }}>
-                                            <Icon name='md-add' />
+                                            <Icon name='md-add' style={{color: '#F3C537'}} />
                                         </TouchableOpacity>
                                     </View>
                                 </View>
@@ -123,7 +123,7 @@ export default class AddVote extends Component {
                                     })
                                 this.refs.modal.close();
                             }} >
-                                <Text>TẠO</Text>
+                                <Text style={{color: '#F3C537'}}>TẠO</Text>
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -190,7 +190,7 @@ export default class AddVote extends Component {
                                 };
                                 this.refs.modal.close();
                             }} >
-                                <Text>LƯU</Text>
+                                <Text style={{color: '#F3C537'}}>LƯU</Text>
                             </TouchableOpacity>
                         </View>
                     </View>

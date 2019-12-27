@@ -71,7 +71,7 @@ export default class TodoScreen extends Component {
       <Container style={styles.container}>
         <Header androidStatusBarColor="#21272E" style={{ backgroundColor: "#21272E" }}>
           <Body style={{ padding: 10 }}>
-            <Title style={styles.title}>Todo List</Title>
+            <Title style={styles.title}>Ghi chú</Title>
           </Body>
         </Header>
         <Content style={{ backgroundColor: "#21272E" }}>
