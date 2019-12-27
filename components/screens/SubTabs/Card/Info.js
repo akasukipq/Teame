@@ -249,15 +249,31 @@ class Info extends Component {
             <View style={styles.section}>
               <TouchableOpacity onPress={() => {
                 //
+                //console.log('member1 = ', this.props.bmembers);
+
                 this.state.membersUid.forEach((item) => {
-                  if(!this.props.data.members.contains(item))
+                  let flag = false;
+
+                  if(item == firebase.auth().currentUser.uid)
                   {
-                    firebase.firestore().collection('request').add({
+                    flag = true;
+                  }
+                  this.props.data.members.forEach((mem) =>
+                  {
+                    if(item == mem.uid)
+                    {
+                      flag = true;
+                    }
+                  })
+                  if(flag == false)
+                  {
+                    firebase.firestore().collection('requests').add({
                       from: firebase.auth().currentUser.displayName,
                       payload: {
                         bmembers: this.state.members,
                         lname: this.props.lname,
-                        cid: this.props.data.id
+                        cid: this.props.data.id,
+                        cname: this.props.data.name,
                       },
                       status: false,
                       to: item,

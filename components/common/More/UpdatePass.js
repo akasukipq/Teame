@@ -57,7 +57,7 @@ export default class UpdatePass extends Component {
                         }
                         
                     }}>
-                        <Text>XÁC NHẬN</Text>
+                        <Text style={{color: '#F3C537'}}>XÁC NHẬN</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={{ marginRight: 10 }}
                         onPress={() => {

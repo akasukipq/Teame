@@ -79,7 +79,7 @@ export default class AddLabel extends Component {
                         this.props.update(this.state.name ? this.state.name : (this.state.existData ? this.state.existData.name : '') , this.state.choosen);
                         this.refs.modal.close();
                     }} >
-                        <Text>OK</Text>
+                        <Text style={{color: '#F3C537'}}>OK</Text>
                     </TouchableOpacity>
                 </View>
             </Modal>

@@ -38,15 +38,16 @@ export default class RegisterScreen extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#184576",
+        backgroundColor: "#21272E",
     },
     headerContainer: {
-        flex: 4,
+        flex: 3,
         alignItems: "center",
     },
     inputContainer: {
-        flex: 6,
-        margin: 30,
+        flex: 7,
+        justifyContent: 'center',
+        margin:20,
 
     },
     title: {

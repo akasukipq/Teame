@@ -131,7 +131,7 @@ export default class HomeScreen extends Component {
                             firebase.firestore().collection('boards').doc(item.bid).collection('lists').doc(item.lid)
                               .get().then(list => {
                                 let namee = list.data().name;
-                                NavigationService.navigate('Chi tiết card', { id: item.id, name: namee, members: users });
+                                NavigationService.navigate('Chi tiết card', { id: item.id, name: namee, members: users, isAdmin: doc.data().author == firebase.auth().currentUser.uid});
                               });
                           });
                       }}>
