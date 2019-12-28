@@ -28,6 +28,6 @@ Firebase
 # Screenshot
 
 <div style="display: inline;">
-<img src="https://drive.google.com/open?id=13guGkWd8WsCz-9qkB12XL9-KEfaeJmbe" width=300, height=540>
+<img src="https://scontent.fsgn5-2.fna.fbcdn.net/v/t1.0-9/s960x960/80362366_2557258101186006_5585092905267101696_o.jpg?_nc_cat=105&_nc_oc=AQlvldrpx2jHWTGk1x05IVK8AGoaxwww2YKn2unxqW5zj0SIedVQoXGaZv_eFHK57og&_nc_ht=scontent.fsgn5-2.fna&oh=4d761d61bf22d5dc7a3e164dec9f9102&oe=5E6F43F6" width=300, height=540>
 </div>
 
